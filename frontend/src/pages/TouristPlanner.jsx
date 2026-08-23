@@ -190,83 +190,54 @@ const COUPON_MAP = {
   'Qutub Minar':         { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 8.5,  perk: '20% Entry Discount + Museum Pass',         businessName: 'Delhi Heritage Audio Guides' },
 };
 
-const CITY_REROUTE_DATA = {
+const CITY_REROUTE_CONFIG = {
   Delhi: {
     primary: "Red Fort",
-    alternate: "Humayun's Tomb",
-    distance: "4.8 km from Red Fort",
-    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=600&q=80",
-    altImage: "https://i.pinimg.com/736x/21/e4/20/21e420db5508a8a7caadca71ea0dcbc1.jpg",
+    alternate: "Safdarjung Tomb",
+    distance: "3.4 km from Red Fort",
     saturation: "91%",
     queue: "~55m Long Queue",
     altQueue: "< 5m Instant Entry",
-    code: "HERITAGEDELHI",
-    discount: 20,
-    perk: "20% Entry Discount + Audio Guide Included",
-    businessName: "Delhi Heritage Audio Guides"
+    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600",
+    altImage: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?w=600"
   },
   Jaipur: {
     primary: "Amber Fort",
     alternate: "Jaigarh Fort",
     distance: "1.2 km from Amber Fort",
-    image: "https://i.pinimg.com/736x/22/60/94/226094843784221825.jpg",
-    altImage: "https://i.pinimg.com/736x/29/45/63/294563631905101960.jpg",
     saturation: "92%",
     queue: "~45m Long Queue",
     altQueue: "< 5m Instant Entry",
-    code: "JAIGARH20",
-    discount: 20,
-    perk: "20% Entry Discount + Partner Hospitality Perk",
-    businessName: "Rajputana Heritage Café"
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600",
+    altImage: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
   },
   Agra: {
     primary: "Taj Mahal",
     alternate: "Mehtab Bagh",
-    distance: "3.5 km from Taj Mahal",
-    image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80",
-    altImage: "https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?auto=format&fit=crop&w=600&q=80",
+    distance: "2.1 km from Taj Mahal",
     saturation: "95%",
     queue: "~60m Long Queue",
     altQueue: "< 10m Instant Entry",
-    code: "MEHTAB25",
-    discount: 25,
-    perk: "25% Entry Discount + River View Photography Pass",
-    businessName: "Yamuna Riverside Tours"
+    image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600",
+    altImage: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=600"
   },
   Varanasi: {
     primary: "Dashashwamedh Ghat",
-    alternate: "Assi Ghat",
-    distance: "2.1 km from Dashashwamedh Ghat",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&q=80",
-    altImage: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=600&q=80",
-    saturation: "88%",
-    queue: "~40m Congestion",
+    alternate: "Assi Ghat & Sarnath",
+    distance: "4.0 km from Dashashwamedh Ghat",
+    saturation: "89%",
+    queue: "~40m Long Queue",
     altQueue: "< 5m Instant Entry",
-    code: "ASSIGHAT15",
-    discount: 15,
-    perk: "15% Boat Tour Discount + Complimentary Refreshment",
-    businessName: "Kashi Boat Services"
-  },
-  Goa: {
-    primary: "Baga Beach",
-    alternate: "Morjim Beach",
-    distance: "14.0 km from Baga Beach",
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80",
-    altImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
-    saturation: "90%",
-    queue: "~45m Peak Traffic",
-    altQueue: "< 5m Quiet Zone Entry",
-    code: "MORJIMPERK",
-    discount: 10,
-    perk: "Complimentary Welcome Drink at Morjim Partner Shack",
-    businessName: "Morjim Shack & Bar"
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600",
+    altImage: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?w=600"
   }
 };
 
-const CITY_REROUTE_DEFAULTS = CITY_REROUTE_DATA;
+const CITY_REROUTE_DATA = CITY_REROUTE_CONFIG;
+const CITY_REROUTE_DEFAULTS = CITY_REROUTE_CONFIG;
 
 function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
-  const cityConfig = CITY_REROUTE_DATA[currentCity] || CITY_REROUTE_DATA['Jaipur'];
+  const cityConfig = CITY_REROUTE_CONFIG[currentCity] || CITY_REROUTE_CONFIG['Delhi'];
 
   if (monumentName && COUPON_MAP[monumentName]) {
     const coupon = COUPON_MAP[monumentName];
@@ -304,12 +275,12 @@ function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
   return {
     monumentName: cityConfig.primary,
     couponInfo: {
-      code: cityConfig.code,
-      discount: cityConfig.discount,
+      code: "HERITAGEDELHI",
+      discount: 20,
       alt: cityConfig.alternate,
-      distKm: parseFloat(cityConfig.distance) || 2.5,
-      perk: cityConfig.perk,
-      businessName: cityConfig.businessName,
+      distKm: parseFloat(cityConfig.distance) || 3.4,
+      perk: "20% Entry Discount + Priority Transit Pass",
+      businessName: "Heritage Audio & Transit Pass",
       saturation: cityConfig.saturation,
       queue: cityConfig.queue,
       altQueue: cityConfig.altQueue
@@ -685,16 +656,19 @@ function DayAccordion({ dayData, globalMonuments, isOpen, onToggle, onRedAlert }
 
 // ─── Reroute Modal ───────────────────────────────────────────────────────────
 
-function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity }) {
-  if (!isOpen || !target) return null;
-  const { monumentName, couponInfo } = target;
-  const cityConfig = CITY_REROUTE_DATA[currentCity] || CITY_REROUTE_DATA['Jaipur'];
+function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity, selectedCity: propCity }) {
+  if (!isOpen) return null;
+  const activeCity = propCity || currentCity || 'Delhi';
+  const cityData = CITY_REROUTE_CONFIG[activeCity] || CITY_REROUTE_CONFIG["Delhi"];
 
-  const primaryImg = PLACE_IMAGES[monumentName] || cityConfig.image || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&q=80';
-  const altImg = PLACE_IMAGES[couponInfo.alt] || cityConfig.altImage || 'https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=500&q=80';
-  const saturationText = couponInfo.saturation || cityConfig.saturation || '92%';
-  const queueText = couponInfo.queue || cityConfig.queue || '~45m Long Queue';
-  const altQueueText = couponInfo.altQueue || cityConfig.altQueue || '< 5m Instant Entry';
+  const primaryTitle = target?.monumentName || cityData.primary;
+  const alternateTitle = target?.couponInfo?.alt || cityData.alternate;
+  const distanceText = target?.couponInfo?.distKm ? `${target.couponInfo.distKm} km from ${primaryTitle}` : cityData.distance;
+  const saturationText = target?.couponInfo?.saturation || cityData.saturation;
+  const queueText = target?.couponInfo?.queue || cityData.queue;
+  const altQueueText = target?.couponInfo?.altQueue || cityData.altQueue;
+  const primaryImg = target?.monumentName ? (PLACE_IMAGES[target.monumentName] || cityData.image) : cityData.image;
+  const altImg = target?.couponInfo?.alt ? (PLACE_IMAGES[target.couponInfo.alt] || cityData.altImage) : cityData.altImage;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -714,7 +688,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
         <div className="p-6 space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-1">
             <div className="font-bold text-red-800 text-sm">
-              Notice: {monumentName} has reached {saturationText} capacity limit.
+              Notice: {primaryTitle} has reached {saturationText} capacity limit.
             </div>
             <p className="text-xs text-slate-700 leading-relaxed">
               Load-balancing incentives are active. Diversion is advised to avoid security delays and long queues.
@@ -727,7 +701,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
               <div className="relative h-24 w-full rounded-lg overflow-hidden bg-slate-900">
                 <img
                   src={primaryImg}
-                  alt={monumentName}
+                  alt={primaryTitle}
                   className="w-full h-full object-cover opacity-80"
                   loading="lazy"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -736,7 +710,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
                   {saturationText} SATURATED
                 </span>
               </div>
-              <div className="font-bold text-[11px] text-slate-900 truncate">{monumentName}</div>
+              <div className="font-bold text-[11px] text-slate-900 truncate">{primaryTitle}</div>
               <div className="text-[10px] text-red-700 font-bold font-mono">{queueText}</div>
             </div>
 
@@ -744,7 +718,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
               <div className="relative h-24 w-full rounded-lg overflow-hidden bg-slate-900">
                 <img
                   src={altImg}
-                  alt={couponInfo.alt}
+                  alt={alternateTitle}
                   className="w-full h-full object-cover"
                   loading="lazy"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -753,7 +727,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
                   RECOMMENDED
                 </span>
               </div>
-              <div className="font-bold text-[11px] text-emerald-900 truncate">{couponInfo.alt}</div>
+              <div className="font-bold text-[11px] text-emerald-900 truncate">{alternateTitle}</div>
               <div className="text-[10px] text-emerald-800 font-bold font-mono">{altQueueText}</div>
             </div>
           </div>
@@ -764,17 +738,17 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity 
                 <CheckCircle size={14} className="text-emerald-700" /> Recommended Alternate Site
               </span>
               <span className="text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full font-mono">
-                {couponInfo.distKm} km from {monumentName}
+                {distanceText}
               </span>
             </div>
 
-            <div className="text-lg font-bold text-slate-900">{couponInfo.alt}</div>
+            <div className="text-lg font-bold text-slate-900">{alternateTitle}</div>
 
             <div className="bg-white border border-emerald-200 rounded-lg p-3 text-xs space-y-1">
               <div className="font-bold text-emerald-800 flex items-center gap-1.5">
-                <Tag size={13} /> {couponInfo.discount}% Entry Discount + Partner Hospitality Perk
+                <Tag size={13} /> {target?.couponInfo?.discount || 20}% Entry Discount + Partner Hospitality Perk
               </div>
-              <p className="text-slate-600 leading-relaxed font-medium">{couponInfo.perk}</p>
+              <p className="text-slate-600 leading-relaxed font-medium">{target?.couponInfo?.perk || "Complimentary Audio Guide & Instant Priority Transit Pass"}</p>
             </div>
           </div>
 
