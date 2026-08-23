@@ -131,23 +131,38 @@ export const VERIFIED_MONUMENTS = {
   // Amritsar
   "Golden Temple": {
     city: "Amritsar",
-    image: "https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=800&auto=format&fit=crop&q=80",
     description: "Sacred golden Harmandir Sahib amrit sarovar complex"
   },
   "Golden Temple Main Gate": {
     city: "Amritsar",
-    image: "https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=800&auto=format&fit=crop&q=80",
     description: "Sacred golden Harmandir Sahib amrit sarovar complex"
+  },
+  "Jallianwala Bagh": {
+    city: "Amritsar",
+    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800&auto=format&fit=crop&q=80",
+    description: "Historic memorial park and national heritage site"
   },
   "Gobindgarh Fort": {
     city: "Amritsar",
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&auto=format&fit=crop&q=80",
     description: "Historic 18th-century military fort and museum"
   },
   "Gobindgarh Fort & Ram Bagh": {
     city: "Amritsar",
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&auto=format&fit=crop&q=80",
     description: "Historic 18th-century military fort and royal garden museum"
+  },
+  "Wagah Border": {
+    city: "Amritsar",
+    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&auto=format&fit=crop&q=80",
+    description: "Iconic border ceremony checkpoint"
+  },
+  "Amritsar Heritage & Food Quarter": {
+    city: "Amritsar",
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80",
+    description: "Vibrant culinary lane famous for traditional Punjabi delicacies"
   },
 
   // Kolkata

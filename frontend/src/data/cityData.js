@@ -639,7 +639,7 @@ export const MASTER_CITY_DATA = {
     coords: [31.6200, 74.8765],
     tagline: 'Sacred golden sanctuary of Harmandir Sahib and rich Punjabi heritage.',
     description: 'Heart of Sikh culture, world-famous for its shimmering Golden Temple, heritage streetscapes, and warm hospitality.',
-    heroImage: 'https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=1200&auto=format&fit=crop&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=1200&auto=format&fit=crop&q=80',
     weather: '24°C · Sunny & Crisp',
     bestTime: 'Best Oct – Mar',
     monuments: [
@@ -671,7 +671,7 @@ export const MASTER_CITY_DATA = {
         load: 70,
         status: 'YELLOW',
         queue: '20m Queue',
-        img: 'https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=800&auto=format&fit=crop&q=80',
+        img: VERIFIED_MONUMENTS['Jallianwala Bagh'].image,
         operatingHours: '06:30 AM – 07:30 PM',
         ecoRules: 'Memorial silence zone · Zero plastic policy',
         sustainabilityRating: '4.8/5 (Memorial Park)'
@@ -697,7 +697,7 @@ export const MASTER_CITY_DATA = {
         perk: 'Complimentary Sweet Lassi with Meal',
         address: 'Heritage Street, Near Golden Temple Gate, Amritsar',
         rating: 4.9,
-        image: 'https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=600'
+        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600'
       },
       {
         name: 'Phulkari Handloom Weavers Guild',
@@ -707,7 +707,7 @@ export const MASTER_CITY_DATA = {
         perk: 'Live Phulkari Embroidery Workshop & Bookmark',
         address: 'Hall Bazaar, Amritsar',
         rating: 4.8,
-        image: 'https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600'
+        image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600'
       }
     ]
   },
