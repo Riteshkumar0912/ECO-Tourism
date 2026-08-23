@@ -190,32 +190,96 @@ const COUPON_MAP = {
   'Qutub Minar':         { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 8.5,  perk: '20% Entry Discount + Museum Pass',         businessName: 'Delhi Heritage Audio Guides' },
 };
 
-const CITY_REROUTE_DEFAULTS = {
+const CITY_REROUTE_DATA = {
   Delhi: {
-    monumentName: 'Red Fort',
-    couponInfo: { code: 'HERITAGEDELHI', discount: 20, alt: "Humayun's Tomb", distKm: 4.8, perk: '20% Entry Discount + Audio Guide Included', businessName: 'Delhi Heritage Audio Guides' }
+    primary: "Red Fort",
+    alternate: "Humayun's Tomb",
+    distance: "4.8 km from Red Fort",
+    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=600&q=80",
+    altImage: "https://i.pinimg.com/736x/21/e4/20/21e420db5508a8a7caadca71ea0dcbc1.jpg",
+    saturation: "91%",
+    queue: "~55m Long Queue",
+    altQueue: "< 5m Instant Entry",
+    code: "HERITAGEDELHI",
+    discount: 20,
+    perk: "20% Entry Discount + Audio Guide Included",
+    businessName: "Delhi Heritage Audio Guides"
   },
   Jaipur: {
-    monumentName: 'Amber Fort',
-    couponInfo: { code: 'JAIGARH20', discount: 20, alt: 'Jaigarh Fort', distKm: 1.2, perk: '20% Entry Discount + Partner Hospitality Perk', businessName: 'Rajputana Heritage Café' }
+    primary: "Amber Fort",
+    alternate: "Jaigarh Fort",
+    distance: "1.2 km from Amber Fort",
+    image: "https://i.pinimg.com/736x/22/60/94/226094843784221825.jpg",
+    altImage: "https://i.pinimg.com/736x/29/45/63/294563631905101960.jpg",
+    saturation: "92%",
+    queue: "~45m Long Queue",
+    altQueue: "< 5m Instant Entry",
+    code: "JAIGARH20",
+    discount: 20,
+    perk: "20% Entry Discount + Partner Hospitality Perk",
+    businessName: "Rajputana Heritage Café"
   },
   Agra: {
-    monumentName: 'Taj Mahal',
-    couponInfo: { code: 'MEHTAB25', discount: 25, alt: 'Mehtab Bagh', distKm: 3.5, perk: '25% Entry Discount + River View Photography Pass', businessName: 'Yamuna Riverside Tours' }
+    primary: "Taj Mahal",
+    alternate: "Mehtab Bagh",
+    distance: "3.5 km from Taj Mahal",
+    image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80",
+    altImage: "https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?auto=format&fit=crop&w=600&q=80",
+    saturation: "95%",
+    queue: "~60m Long Queue",
+    altQueue: "< 10m Instant Entry",
+    code: "MEHTAB25",
+    discount: 25,
+    perk: "25% Entry Discount + River View Photography Pass",
+    businessName: "Yamuna Riverside Tours"
   },
   Varanasi: {
-    monumentName: 'Dashashwamedh Ghat',
-    couponInfo: { code: 'ASSIGHAT15', discount: 15, alt: 'Assi Ghat', distKm: 2.1, perk: '15% Boat Tour Discount + Complimentary Refreshment', businessName: 'Kashi Boat Services' }
+    primary: "Dashashwamedh Ghat",
+    alternate: "Assi Ghat",
+    distance: "2.1 km from Dashashwamedh Ghat",
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&q=80",
+    altImage: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=600&q=80",
+    saturation: "88%",
+    queue: "~40m Congestion",
+    altQueue: "< 5m Instant Entry",
+    code: "ASSIGHAT15",
+    discount: 15,
+    perk: "15% Boat Tour Discount + Complimentary Refreshment",
+    businessName: "Kashi Boat Services"
   },
   Goa: {
-    monumentName: 'Baga Beach',
-    couponInfo: { code: 'MORJIMPERK', discount: 10, alt: 'Morjim Beach', distKm: 14.0, perk: 'Complimentary Welcome Drink at Morjim Partner Shack', businessName: 'Morjim Shack & Bar' }
+    primary: "Baga Beach",
+    alternate: "Morjim Beach",
+    distance: "14.0 km from Baga Beach",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80",
+    altImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+    saturation: "90%",
+    queue: "~45m Peak Traffic",
+    altQueue: "< 5m Quiet Zone Entry",
+    code: "MORJIMPERK",
+    discount: 10,
+    perk: "Complimentary Welcome Drink at Morjim Partner Shack",
+    businessName: "Morjim Shack & Bar"
   }
 };
 
+const CITY_REROUTE_DEFAULTS = CITY_REROUTE_DATA;
+
 function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
+  const cityConfig = CITY_REROUTE_DATA[currentCity] || CITY_REROUTE_DATA['Jaipur'];
+
   if (monumentName && COUPON_MAP[monumentName]) {
-    return { monumentName, couponInfo: COUPON_MAP[monumentName] };
+    const coupon = COUPON_MAP[monumentName];
+    return {
+      monumentName,
+      couponInfo: {
+        ...coupon,
+        saturation: cityConfig.saturation,
+        queue: cityConfig.queue,
+        altQueue: cityConfig.altQueue,
+        distKm: coupon.distKm || parseFloat(cityConfig.distance) || 2.5
+      }
+    };
   }
 
   if (monumentName) {
@@ -223,12 +287,34 @@ function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
       monumentName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(monumentName.toLowerCase())
     );
     if (matchedKey) {
-      return { monumentName: matchedKey, couponInfo: COUPON_MAP[matchedKey] };
+      const coupon = COUPON_MAP[matchedKey];
+      return {
+        monumentName: matchedKey,
+        couponInfo: {
+          ...coupon,
+          saturation: cityConfig.saturation,
+          queue: cityConfig.queue,
+          altQueue: cityConfig.altQueue,
+          distKm: coupon.distKm || parseFloat(cityConfig.distance) || 2.5
+        }
+      };
     }
   }
 
-  const fallback = CITY_REROUTE_DEFAULTS[currentCity] || CITY_REROUTE_DEFAULTS['Jaipur'];
-  return { monumentName: fallback.monumentName, couponInfo: fallback.couponInfo };
+  return {
+    monumentName: cityConfig.primary,
+    couponInfo: {
+      code: cityConfig.code,
+      discount: cityConfig.discount,
+      alt: cityConfig.alternate,
+      distKm: parseFloat(cityConfig.distance) || 2.5,
+      perk: cityConfig.perk,
+      businessName: cityConfig.businessName,
+      saturation: cityConfig.saturation,
+      queue: cityConfig.queue,
+      altQueue: cityConfig.altQueue
+    }
+  };
 }
 
 // ─── City Destination Hub Component (Rich Initial State) ──────────────────────
@@ -599,12 +685,16 @@ function DayAccordion({ dayData, globalMonuments, isOpen, onToggle, onRedAlert }
 
 // ─── Reroute Modal ───────────────────────────────────────────────────────────
 
-function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
+function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity }) {
   if (!isOpen || !target) return null;
   const { monumentName, couponInfo } = target;
+  const cityConfig = CITY_REROUTE_DATA[currentCity] || CITY_REROUTE_DATA['Jaipur'];
 
-  const primaryImg = PLACE_IMAGES[monumentName] || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&q=80';
-  const altImg = PLACE_IMAGES[couponInfo.alt] || 'https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=500&q=80';
+  const primaryImg = PLACE_IMAGES[monumentName] || cityConfig.image || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&q=80';
+  const altImg = PLACE_IMAGES[couponInfo.alt] || cityConfig.altImage || 'https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=500&q=80';
+  const saturationText = couponInfo.saturation || cityConfig.saturation || '92%';
+  const queueText = couponInfo.queue || cityConfig.queue || '~45m Long Queue';
+  const altQueueText = couponInfo.altQueue || cityConfig.altQueue || '< 5m Instant Entry';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -624,7 +714,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
         <div className="p-6 space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-1">
             <div className="font-bold text-red-800 text-sm">
-              Notice: {monumentName} has reached 92% capacity limit.
+              Notice: {monumentName} has reached {saturationText} capacity limit.
             </div>
             <p className="text-xs text-slate-700 leading-relaxed">
               Load-balancing incentives are active. Diversion is advised to avoid security delays and long queues.
@@ -643,11 +733,11 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
                 <span className="absolute top-1 left-1 bg-red-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono">
-                  92% SATURATED
+                  {saturationText} SATURATED
                 </span>
               </div>
               <div className="font-bold text-[11px] text-slate-900 truncate">{monumentName}</div>
-              <div className="text-[10px] text-red-700 font-bold font-mono">~45m Long Queue</div>
+              <div className="text-[10px] text-red-700 font-bold font-mono">{queueText}</div>
             </div>
 
             <div className="bg-emerald-50 rounded-xl overflow-hidden border border-emerald-300 space-y-1 p-2">
@@ -664,7 +754,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
                 </span>
               </div>
               <div className="font-bold text-[11px] text-emerald-900 truncate">{couponInfo.alt}</div>
-              <div className="text-[10px] text-emerald-800 font-bold font-mono">&lt; 5m Instant Entry</div>
+              <div className="text-[10px] text-emerald-800 font-bold font-mono">{altQueueText}</div>
             </div>
           </div>
 
@@ -1079,7 +1169,7 @@ export default function TouristPlanner() {
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <AlertTriangle size={18} className="text-red-700 shrink-0" />
               <span className="text-slate-900 text-xs sm:text-sm font-bold truncate font-mono">
-                Notice: Amber Fort has reached 92% capacity. Load-balancing incentives active.
+                Notice: {alertBanner.name} has reached {alertBanner.loadPercent || 92}% capacity. Load-balancing incentives active.
               </span>
               <button
                 onClick={() => { setShowReroute(true); }}
@@ -1308,6 +1398,7 @@ export default function TouristPlanner() {
         target={rerouteTarget}
         onAccept={acceptReroute}
         loading={rerouting}
+        currentCity={destination}
       />
 
       {/* Voucher Pass Modal */}
