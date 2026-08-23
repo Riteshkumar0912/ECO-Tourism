@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require('mongoose');
-const { generateSmartItinerary } = require('../config/gemini');
+const { generateSmartItinerary, generateRerouteReasoning, generateLocalInsights } = require('../config/gemini');
 const Itinerary = require('../models/Itinerary');
 const Coupon = require('../models/Coupon');
 const Monument = require('../models/Monument');
@@ -187,6 +187,36 @@ router.post('/:id/reroute', async (req, res) => {
   } catch (err) {
     console.error('POST /api/itinerary/:id/reroute error:', err.message);
     return res.status(500).json({ success: false, message: 'Failed to reroute itinerary.' });
+  }
+});
+
+// ─── POST /api/itinerary/reroute-explain ──────────────────────────────────────
+router.post('/reroute-explain', async (req, res) => {
+  try {
+    const { originalSpot, alternateSpot, currentLoad, city } = req.body;
+    if (!originalSpot || !alternateSpot) {
+      return res.status(400).json({ success: false, message: 'originalSpot and alternateSpot are required.' });
+    }
+
+    const reasoning = await generateRerouteReasoning({ originalSpot, alternateSpot, currentLoad, city });
+    return res.json({ success: true, data: reasoning });
+  } catch (err) {
+    console.error('POST /api/itinerary/reroute-explain error:', err.message);
+    return res.status(500).json({ success: false, message: 'Failed to generate reroute explanation.' });
+  }
+});
+
+// ─── GET /api/itinerary/insights ─────────────────────────────────────────────
+router.get('/insights', async (req, res) => {
+  try {
+    const spotName = req.query.spotName || 'Amber Fort';
+    const city = req.query.city || 'Jaipur';
+
+    const insights = await generateLocalInsights({ spotName, city });
+    return res.json({ success: true, data: insights });
+  } catch (err) {
+    console.error('GET /api/itinerary/insights error:', err.message);
+    return res.status(500).json({ success: false, message: 'Failed to generate local insights.' });
   }
 });
 

@@ -126,7 +126,6 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
   const template = FALLBACK_TEMPLATES[city];
 
   if (!template) {
-    // Generic fallback for unlisted cities
     return {
       destination: city,
       budget,
@@ -148,7 +147,6 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
     };
   }
 
-  // Cap to requested days
   const scheduledDays = template.days.slice(0, days);
 
   const schedule = scheduledDays.map(dayData => ({
@@ -176,10 +174,6 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
     })
   }));
 
-  // Budget breakdown
-  const perDayCost = Math.round(budget / Math.max(days, 1));
-  const totalActivity = schedule.reduce((sum, day) => sum + day.places.reduce((s, p) => s + p.estimatedCost, 0), 0);
-
   return {
     destination: city,
     budget,
@@ -195,14 +189,14 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
       accommodation: Math.round(budget * 0.45),
       food: Math.round(budget * 0.2),
       transport: Math.round(budget * 0.1),
-      activities: totalActivity,
-      miscellaneous: Math.max(0, budget - Math.round(budget * 0.75) - totalActivity)
+      activities: Math.round(budget * 0.15),
+      miscellaneous: Math.round(budget * 0.1)
     },
     totalEstimatedCost: Math.round(budget * 0.85)
   };
 }
 
-// ─── GEMINI AI GENERATOR ──────────────────────────────────────────────────────
+// ─── GEMINI AI CLIENT ─────────────────────────────────────────────────────────
 let aiClient = null;
 
 function getAIClient() {
@@ -213,6 +207,7 @@ function getAIClient() {
   return aiClient;
 }
 
+// ─── 1. PERSONALIZED ECO-ITINERARY GENERATOR ────────────────────────────────
 async function generateSmartItinerary({ destination, budget, days, interests }) {
   const client = getAIClient();
 
@@ -294,4 +289,113 @@ JSON schema:
   }
 }
 
-module.exports = { generateSmartItinerary, HIGH_DENSITY_SPOTS };
+// ─── 2. DYNAMIC CROWD REROUTE EXPLANATION ────────────────────────────────────
+async function generateRerouteReasoning({ originalSpot, alternateSpot, currentLoad, city }) {
+  const client = getAIClient();
+
+  if (!client) {
+    return {
+      originalSpot,
+      alternateSpot,
+      currentLoad: currentLoad || 92,
+      reasoning: `${originalSpot} is currently operating at ${currentLoad || 92}% saturation. Recommending ${alternateSpot} in ${city || 'the area'} ensures a smoother experience with zero queue delays and exclusive green incentive perks.`,
+      ecoImpact: 'Reduces peak footfall pressure on historic structures by 25% and distributes regional tourism revenue evenly.',
+      recommendedBestTime: 'Visit primary spot early morning tomorrow (07:30 AM) when saturation drops below 40%.'
+    };
+  }
+
+  const prompt = `You are an AI Crowd Intelligence & Sustainable Tourism Specialist for Indian Heritage Sites.
+Provide a real-time advisory on why tourists should temporarily reroute from ${originalSpot} to ${alternateSpot} in ${city || 'India'}.
+${originalSpot} is currently experiencing high crowd saturation (${currentLoad || 92}% capacity).
+
+Return ONLY valid JSON matching this schema:
+{
+  "originalSpot": "${originalSpot}",
+  "alternateSpot": "${alternateSpot}",
+  "currentLoad": ${currentLoad || 92},
+  "reasoning": string (2 clear sentences on why rerouting avoids queues & enhances experience),
+  "ecoImpact": string (1 sentence on structural conservation and sustainable crowd distribution),
+  "recommendedBestTime": string (best time slot to visit ${originalSpot} later)
+}`;
+
+  try {
+    const response = await client.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.7,
+        maxOutputTokens: 1024
+      }
+    });
+
+    return JSON.parse(response.text());
+  } catch (err) {
+    console.warn(`⚠️  Gemini reroute reasoning fallback: ${err.message}`);
+    return {
+      originalSpot,
+      alternateSpot,
+      currentLoad: currentLoad || 92,
+      reasoning: `${originalSpot} is experiencing ${currentLoad || 92}% peak capacity. Redirection to ${alternateSpot} guarantees shorter wait times and a comfortable visit.`,
+      ecoImpact: 'Balanced footfall preserves heritage masonry and reduces urban congestion.',
+      recommendedBestTime: 'Early morning (07:30 AM - 09:00 AM) tomorrow.'
+    };
+  }
+}
+
+// ─── 3. LOCAL CULTURAL & ECO INSIGHTS ─────────────────────────────────────────
+async function generateLocalInsights({ spotName, city }) {
+  const client = getAIClient();
+
+  if (!client) {
+    return {
+      spotName,
+      city,
+      culturalInsight: `${spotName} is an architectural emblem in ${city}, celebrated for its rich historical craftsmanship and heritage significance.`,
+      sustainabilityTip: 'Use eco-friendly electric rickshaws or walk along marked heritage corridors; carry reusable water bottles.',
+      insiderTip: 'Visit during early morning hours for optimal photography light and peaceful exploration.'
+    };
+  }
+
+  const prompt = `You are an expert Indian heritage historian and eco-tourism guide.
+Generate concise cultural insights and eco-sustainability recommendations for ${spotName} in ${city || 'India'}.
+
+Return ONLY valid JSON matching this schema:
+{
+  "spotName": "${spotName}",
+  "city": "${city || 'India'}",
+  "culturalInsight": string (2 engaging sentences on history & significance),
+  "sustainabilityTip": string (1 actionable eco-friendly advice for visitors),
+  "insiderTip": string (1 practical tip on timing or hidden spots)
+}`;
+
+  try {
+    const response = await client.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        temperature: 0.7,
+        maxOutputTokens: 1024
+      }
+    });
+
+    return JSON.parse(response.text());
+  } catch (err) {
+    console.warn(`⚠️  Gemini local insights fallback: ${err.message}`);
+    return {
+      spotName,
+      city,
+      culturalInsight: `${spotName} represents iconic architectural heritage in ${city}.`,
+      sustainabilityTip: 'Dispose of waste responsibly in designated bins and support local artisans nearby.',
+      insiderTip: 'Early mornings offer the best atmosphere and lowest crowds.'
+    };
+  }
+}
+
+module.exports = {
+  generateSmartItinerary,
+  generateRerouteReasoning,
+  generateLocalInsights,
+  HIGH_DENSITY_SPOTS
+};
