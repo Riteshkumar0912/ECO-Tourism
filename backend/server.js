@@ -13,6 +13,13 @@ const { fetchLiveWeather, getPlacesForCity, getHotelsForCity } = require('./serv
 
 // ─── APP INIT ────────────────────────────────────────────────────────────────
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://eco-tourism-three.vercel.app",
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -20,18 +27,26 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
   }
 });
 
 // ─── MIDDLEWARE ───────────────────────────────────────────────────────────────
 
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Attach io to every request for use inside route handlers
