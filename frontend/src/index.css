@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: 4 120 87;       /* emerald-700 */
+    --color-success: 16 185 129;     /* emerald-500 */
+    --color-warning: 217 119 6;      /* amber-600   */
+    --color-danger:  185 28 28;      /* red-700     */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-slate-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-emerald-200 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-emerald-300; }
+}
+
+@layer components {
+  /* ── Enterprise Cards ────────────────────────────────────── */
+  .glass-card {
+    @apply bg-white border border-slate-200 shadow-sm rounded-xl;
+  }
+  .glass-card-sm {
+    @apply bg-white border border-slate-200 shadow-xs rounded-lg;
+  }
+
+  /* ── Status badges ───────────────────────────────────────── */
+  .badge-green  { @apply bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-md px-2.5 py-0.5 text-xs font-semibold; }
+  .badge-yellow { @apply bg-amber-50   text-amber-900   border border-amber-200   rounded-md px-2.5 py-0.5 text-xs font-semibold; }
+  .badge-red    { @apply bg-red-50     text-red-900     border border-red-200     rounded-md px-2.5 py-0.5 text-xs font-semibold; }
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+  .btn-primary {
+    @apply bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900
+           text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 shadow-xs
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-danger {
+    @apply bg-red-700 hover:bg-red-800 active:bg-red-900
+           text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 shadow-xs;
+  }
+  .btn-success {
+    @apply bg-emerald-700 hover:bg-emerald-800
+           text-white font-semibold px-4 py-2 rounded-lg
+           transition-all duration-200 shadow-xs;
+  }
+  .btn-ghost {
+    @apply bg-slate-100 hover:bg-slate-200 text-slate-700
+           font-semibold px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  /* ── Nav link ────────────────────────────────────────────── */
+  .nav-link {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600
+           hover:text-emerald-800 hover:bg-emerald-50/70
+           transition-all duration-200 text-xs font-bold;
+  }
+  .nav-link-active {
+    @apply text-white bg-emerald-700 shadow-xs hover:bg-emerald-800;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}

@@ -1,0 +1,335 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, ReferenceLine, Legend
+} from 'recharts';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import '../utils/leafletFix';
+import { useSocket } from '../context/SocketContext';
+import {
+  Shield, AlertTriangle, Users, TrendingUp, Activity,
+  Zap, RefreshCw, MapPin, Clock, CheckCircle,
+  ChevronDown, Bell, Eye, Navigation, BarChart2, X, Ticket, Download, FileText
+} from 'lucide-react';
+
+const CITY_CENTRES = {
+  Jaipur:   [26.9124, 75.7873],
+  Agra:     [27.1767, 78.0081],
+  Varanasi: [25.3176, 82.9739],
+  Goa:      [15.2993, 74.1240],
+  Delhi:    [28.6139, 77.2090],
+};
+
+const MONUMENT_COORDS = {
+  'Amber Fort':              [26.9855, 75.8513],
+  'Jaigarh Fort':            [26.9917, 75.8458],
+  'Hawa Mahal':              [26.9239, 75.8267],
+  'City Palace Jaipur':      [26.9258, 75.8237],
+  'Nahargarh Fort':          [26.9394, 75.8042],
+  'Taj Mahal':               [27.1751, 78.0421],
+  'Mehtab Bagh':             [27.1826, 78.0361],
+  'Agra Fort':               [27.1795, 78.0211],
+  'Dashashwamedh Ghat':      [25.3075, 83.0107],
+  'Assi Ghat':               [25.2855, 83.0132],
+  'Sarnath Archaeological Site': [25.3810, 83.0229],
+  'Baga Beach':              [15.5522, 73.7519],
+  'Morjim Beach':            [15.6347, 73.7326],
+  'Aguada Fort':             [15.5012, 73.7727],
+  'India Gate':              [28.6129, 77.2295],
+  "Humayun's Tomb":          [28.5933, 77.2507],
+  'Qutub Minar':             [28.5245, 77.1855],
+};
+
+function makeMarkerIcon(status, load) {
+  const colors = { GREEN: '#047857', YELLOW: '#d97706', RED: '#b91c1c' };
+  const color  = colors[status] || '#047857';
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="38" viewBox="0 0 32 38">
+      <path d="M16 1C8.82 1 3 6.82 3 14c0 9.33 13 23 13 23S29 23.33 29 14C29 6.82 23.18 1 16 1z"
+        fill="${color}" stroke="white" stroke-width="1.5"/>
+      <text x="16" y="18" text-anchor="middle" fill="white" font-size="10" font-weight="bold"
+        font-family="Inter,sans-serif">${load}%</text>
+    </svg>`;
+
+  return L.divIcon({
+    html: svg,
+    iconSize:   [32, 38],
+    iconAnchor: [16, 38],
+    popupAnchor:[0, -38],
+    className:  '',
+  });
+}
+
+function MapRecenterer({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom, { animate: true });
+  }, [center, zoom, map]);
+  return null;
+}
+
+function buildHourlyData() {
+  const base = [120, 180, 340, 560, 820, 950, 1100, 980, 860, 720, 540, 420];
+  return ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'].map((h, i) => ({
+    hour: `${h}:00`,
+    footfall: base[i],
+    capacity: 1000,
+    diverted: Math.round(base[i] * 0.15),
+  }));
+}
+
+const SEED_INCIDENTS = [
+  { id: 'INC-901', time: '16:42:10', spot: 'Amber Fort', level: 'HIGH (92%)', action: 'Reroute Broadcast Dispatched -> Jaigarh Fort', status: 'ACTIVE' },
+  { id: 'INC-902', time: '16:20:05', spot: 'Taj Mahal', level: 'MODERATE (68%)', action: 'Incentive Pass Activated -> Mehtab Bagh', status: 'RESOLVED' },
+  { id: 'INC-903', time: '15:50:33', spot: 'Dashashwamedh Ghat', level: 'HIGH (88%)', action: 'Boat Corridor Diverted -> Assi Ghat', status: 'RESOLVED' },
+  { id: 'INC-904', time: '15:15:22', spot: 'India Gate', level: 'HIGH (90%)', action: 'Shuttle Diverted -> Humayun Tomb', status: 'RESOLVED' },
+];
+
+export default function AuthorityDashboard() {
+  const { monuments, activeAlert, isConnected, selectedCity, switchCity } = useSocket();
+
+  const [incidents, setIncidents] = useState(SEED_INCIDENTS);
+  const hourlyData = buildHourlyData();
+
+  useEffect(() => {
+    if (activeAlert?.crowdedSpot) {
+      const newInc = {
+        id: `INC-${Math.floor(1000 + Math.random() * 9000)}`,
+        time: new Date().toLocaleTimeString().split(' ')[0],
+        spot: activeAlert.crowdedSpot.name,
+        level: `HIGH (${activeAlert.crowdedSpot.loadPercent}%)`,
+        action: `Auto Reroute Dispatched -> ${activeAlert.alternativeSpot?.name || 'Alternate'}`,
+        status: 'ACTIVE'
+      };
+      setIncidents(prev => [newInc, ...prev.slice(0, 8)]);
+    }
+  }, [activeAlert]);
+
+  const handleBroadcast = (e) => {
+    e.preventDefault();
+    if (!broadcastTitle || !broadcastMsg) return;
+    setSending(true);
+
+    sendBroadcast({
+      title: broadcastTitle,
+      message: broadcastMsg,
+      targetCity,
+      severity,
+    });
+
+    setTimeout(() => {
+      setSending(false);
+      setSentSuccess(true);
+      setBroadcastTitle('');
+      setBroadcastMsg('');
+      setTimeout(() => setSentSuccess(false), 3000);
+    }, 400);
+  };
+
+  const handleExportCSV = () => {
+    const headers = ['Incident ID,Timestamp,Spot,Crowd Level,Action Taken,Status\n'];
+    const rows = incidents.map(i => `${i.id},${i.time},"${i.spot}",${i.level},"${i.action}",${i.status}`).join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Incident_Report_${selectedCity}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const cityMonuments = monuments.filter(m =>
+    m.city?.toLowerCase() === selectedCity?.toLowerCase()
+  );
+
+  const displayMonuments = cityMonuments.length > 0 ? cityMonuments : monuments;
+  const mapCenter = CITY_CENTRES[selectedCity] || CITY_CENTRES['Jaipur'];
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
+      <div className="max-w-7xl mx-auto px-4 pt-4 space-y-6">
+
+        {/* ── Operational KPI Cards ──────────────────────────────── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1 shadow-sm">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Current Rush Level</div>
+            <div className="text-2xl font-black text-slate-900">74.2%</div>
+            <div className="text-[10px] text-emerald-800 font-bold">Optimal Operating Band</div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1 shadow-sm">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Dispatched Reroute Notices</div>
+            <div className="text-2xl font-black text-slate-900 font-mono">1,482</div>
+            <div className="text-[10px] text-slate-500 font-semibold">Today's Total Advisory Passes</div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1 shadow-sm">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Tourists Redirected</div>
+            <div className="text-2xl font-black text-emerald-800 font-mono">3,840</div>
+            <div className="text-[10px] text-slate-500 font-semibold">Visitors Diverted to Alternates</div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1 shadow-sm">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Alert Success Rate</div>
+            <div className="text-2xl font-black text-slate-900">99.4%</div>
+            <div className="text-[10px] text-emerald-800 font-bold">Automated Reroute &lt; 2 mins</div>
+          </div>
+        </div>
+
+        {/* Monitored Zones CCTV Preview Grid */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 font-mono">
+              <Eye size={15} className="text-emerald-700" /> Monitored Perimeter Edge AI Cameras
+            </h3>
+            <span className="text-xs font-mono font-bold text-slate-500">2 Active CCTV Feed References</span>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs p-3 space-y-2 flex gap-3 items-center">
+              <div className="relative h-20 w-32 rounded-lg overflow-hidden bg-slate-900 shrink-0">
+                <img
+                  src="https://i.pinimg.com/736x/22/60/94/226094843784221825.jpg"
+                  alt="Amber Fort North Gate"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=600&q=80";
+                  }}
+                />
+                <span className="absolute top-1 left-1 bg-red-700 text-white text-[8px] font-bold px-1 rounded font-mono">LIVE</span>
+              </div>
+              <div className="min-w-0 space-y-1">
+                <div className="font-bold text-xs text-slate-900 truncate">North Gate Main Perimeter</div>
+                <div className="text-[11px] text-slate-500 font-mono">Amber Fort · 92% Rush Level</div>
+                <span className="inline-block bg-red-50 text-red-800 border border-red-200 px-2 py-0.5 rounded text-[10px] font-bold">Reroute Active</span>
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs p-3 space-y-2 flex gap-3 items-center">
+              <div className="relative h-20 w-32 rounded-lg overflow-hidden bg-slate-900 shrink-0">
+                <img
+                  src="https://i.pinimg.com/736x/29/45/63/294563631905101960.jpg"
+                  alt="Jaigarh Fort Central Courtyard"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=600&q=80";
+                  }}
+                />
+                <span className="absolute top-1 left-1 bg-emerald-700 text-white text-[8px] font-bold px-1 rounded font-mono">LIVE</span>
+              </div>
+              <div className="min-w-0 space-y-1">
+                <div className="font-bold text-xs text-slate-900 truncate">Central Courtyard Cam</div>
+                <div className="text-[11px] text-slate-500 font-mono">Jaigarh Fort · 35% Rush Level</div>
+                <span className="inline-block bg-emerald-50 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-bold">Normal Load</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Interactive GIS Map Panel ──────────────── */}
+        <div className="w-full space-y-4">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+              <div className="font-bold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <MapPin size={14} className="text-emerald-700" /> City Crowd Map — {selectedCity}
+              </div>
+              <div className="flex gap-2 text-[10px] font-bold">
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">Green: Normal</span>
+                <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded">Amber: Moderate</span>
+                <span className="bg-red-50 text-red-800 border border-red-200 px-2 py-0.5 rounded">Red: Busy</span>
+              </div>
+            </div>
+
+            <div className="h-[420px] relative">
+              <MapContainer center={mapCenter} zoom={12} style={{ height: '100%', width: '100%' }}>
+                <MapRecenterer center={mapCenter} zoom={12} />
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                />
+                {displayMonuments.map((m) => {
+                  const coords = MONUMENT_COORDS[m.name] || mapCenter;
+                  const pct = m.maxCapacity > 0 ? Math.round((m.currentCount / m.maxCapacity) * 100) : 35;
+                  const stat = pct >= 85 ? 'RED' : pct >= 60 ? 'YELLOW' : 'GREEN';
+
+                  return (
+                    <Marker key={m._id || m.name} position={coords} icon={makeMarkerIcon(stat, pct)}>
+                      <Popup>
+                        <div className="p-1 space-y-1 font-sans text-xs">
+                          <div className="font-bold text-slate-900">{m.name}</div>
+                          <div className="text-[11px] text-slate-500 font-mono">{m.city} · {pct}% Capacity</div>
+                          <div className="text-[10px] font-bold text-emerald-800">
+                            {m.alternativeSpot?.name ? `Alt: ${m.alternativeSpot.name}` : 'Normal'}
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+              </MapContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Incident Log Table ────────────────────────────────────── */}
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm space-y-0">
+          <div className="px-5 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 font-mono">
+              <FileText size={15} className="text-emerald-700" /> Recent Crowd Alert Log
+            </h3>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-mono font-bold text-slate-500">{incidents.length} Recorded Entries</span>
+              <button
+                onClick={handleExportCSV}
+                className="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-xs transition-all flex items-center gap-1.5"
+              >
+                <Download size={13} /> Export CSV
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-100 border-b border-slate-200 text-slate-600 font-mono font-bold text-[11px] uppercase tracking-wider">
+                <tr>
+                  <th className="py-3 px-4">Incident ID</th>
+                  <th className="py-3 px-4">Timestamp</th>
+                  <th className="py-3 px-4">Place Spot</th>
+                  <th className="py-3 px-4">Rush Level</th>
+                  <th className="py-3 px-4">Action Dispatched</th>
+                  <th className="py-3 px-4 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                {incidents.map((inc) => (
+                  <tr key={inc.id} className="hover:bg-slate-50/80 transition-colors even:bg-slate-50/40">
+                    <td className="py-3 px-4 font-mono font-bold text-slate-900">{inc.id}</td>
+                    <td className="py-3 px-4 font-mono text-slate-600">{inc.time}</td>
+                    <td className="py-3 px-4 font-bold text-slate-900">{inc.spot}</td>
+                    <td className="py-3 px-4 font-bold text-slate-800">{inc.level}</td>
+                    <td className="py-3 px-4 text-slate-700">{inc.action}</td>
+                    <td className="py-3 px-4 text-right font-mono font-bold">
+                      <span className={`px-2 py-0.5 rounded text-[10px] ${
+                        inc.status === 'ACTIVE'
+                          ? 'bg-red-50 text-red-800 border border-red-200'
+                          : 'bg-emerald-50 text-emerald-900 border border-emerald-200'
+                      }`}>
+                        {inc.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
