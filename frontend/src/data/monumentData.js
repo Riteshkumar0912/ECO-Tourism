@@ -63,7 +63,7 @@ export const VERIFIED_MONUMENTS = {
   // Varanasi
   "Dashashwamedh Ghat": {
     city: "Varanasi",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&auto=format&fit=crop&q=80",
+    image: "https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg",
     description: "Main ghat known for the grand evening Ganga Aarti"
   },
   "Assi Ghat": {

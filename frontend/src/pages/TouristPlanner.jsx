@@ -73,11 +73,11 @@ const CITY_HERO_DATA = {
     state: 'Uttar Pradesh',
     title: 'Varanasi — Spiritual Capital',
     tagline: 'Ancient living city on the sacred Ganges river with timeless ghats.',
-    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg',
     weather: '25°C · Clear Sky',
     bestTime: 'Best Nov – Feb',
     monuments: [
-      { name: 'Dashashwamedh Ghat', load: 88, status: 'RED', queue: 'High Congestion', img: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=400&q=80' },
+      { name: 'Dashashwamedh Ghat', load: 88, status: 'RED', queue: 'High Congestion', img: 'https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg' },
       { name: 'Assi Ghat', load: 30, status: 'GREEN', queue: 'Spacious (Recommended)', img: 'https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=400&q=80' },
       { name: 'Sarnath Site', load: 45, status: 'GREEN', queue: '10 mins queue', img: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=400&q=80' },
     ]
