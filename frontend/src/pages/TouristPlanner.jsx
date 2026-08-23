@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import { VERIFIED_MONUMENTS } from '../data/monumentData';
+import { MASTER_CITY_DATA } from '../data/cityData';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -40,75 +41,29 @@ const PLACE_IMAGES = Object.entries(VERIFIED_MONUMENTS).reduce((acc, [name, data
   'Aguada Fort': 'https://images.unsplash.com/photo-1587922546307-776227941871?w=800&auto=format&fit=crop&q=80',
 });
 
-// ─── City Hero Showcase Data ──────────────────────────────────────────────────
+// ─── City Hero Showcase Data (Master Derived) ─────────────────────────────────
 
-const CITY_HERO_DATA = {
-  Jaipur: {
-    state: 'Rajasthan',
-    title: 'Jaipur — The Pink City',
-    tagline: 'UNESCO World Heritage royal landscape of Mughal & Rajput forts.',
-    image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
-    weather: '26°C · Ideal Sunlight',
-    bestTime: 'Best Oct – Mar',
-    monuments: [
-      { name: 'Amber Fort', load: 92, status: 'RED', queue: '45 mins queue', img: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Jaigarh Fort', load: 35, status: 'GREEN', queue: '< 5 mins queue (Recommended)', img: 'https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Hawa Mahal', load: 65, status: 'YELLOW', queue: '15 mins queue', img: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=400&q=80' },
-    ]
-  },
-  Agra: {
-    state: 'Uttar Pradesh',
-    title: 'Agra — City of the Taj',
-    tagline: 'Historic Mughal capital on the Yamuna banks with 3 UNESCO Heritage sites.',
-    image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
-    weather: '24°C · Mild Breeze',
-    bestTime: 'Best Oct – Mar',
-    monuments: [
-      { name: 'Taj Mahal', load: 95, status: 'RED', queue: '60 mins queue', img: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Mehtab Bagh', load: 28, status: 'GREEN', queue: '< 5 mins queue (Recommended)', img: 'https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Agra Fort', load: 60, status: 'YELLOW', queue: '20 mins queue', img: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=400&q=80' },
-    ]
-  },
-  Varanasi: {
-    state: 'Uttar Pradesh',
-    title: 'Varanasi — Spiritual Capital',
-    tagline: 'Ancient living city on the sacred Ganges river with timeless ghats.',
-    image: 'https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg',
-    weather: '25°C · Clear Sky',
-    bestTime: 'Best Nov – Feb',
-    monuments: [
-      { name: 'Dashashwamedh Ghat', load: 88, status: 'RED', queue: 'High Congestion', img: 'https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg' },
-      { name: 'Assi Ghat', load: 30, status: 'GREEN', queue: 'Spacious (Recommended)', img: 'https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Sarnath Site', load: 45, status: 'GREEN', queue: '10 mins queue', img: 'https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=400&q=80' },
-    ]
-  },
-  Goa: {
-    state: 'Goa',
-    title: 'Goa — Coastal Heritage & Beaches',
-    tagline: 'Portuguese colonial architecture meets pristine eco beaches & sanctuaries.',
-    image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
-    weather: '29°C · Coastal Breeze',
-    bestTime: 'Best Nov – Mar',
-    monuments: [
-      { name: 'Baga Beach', load: 90, status: 'RED', queue: 'Peak Traffic', img: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Morjim Beach', load: 25, status: 'GREEN', queue: 'Quiet Zone (Recommended)', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80' },
-      { name: 'Aguada Fort', load: 50, status: 'YELLOW', queue: '15 mins queue', img: 'https://images.unsplash.com/photo-1587922546307-776227941871?auto=format&fit=crop&w=400&q=80' },
-    ]
-  },
-  Delhi: {
-    state: 'National Capital Territory',
-    title: 'Delhi — Historic Capital Hub',
-    tagline: 'Three millennia of royal empires, Mughal tombs & vibrant bazaars.',
-    image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1200&q=80',
-    weather: '23°C · Crisp Air',
-    bestTime: 'Best Oct – Mar',
-    monuments: [
-      { name: 'India Gate', load: 92, status: 'RED', queue: 'High Perimeter Rush', img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=400&q=80' },
-      { name: "Humayun's Tomb", load: 32, status: 'GREEN', queue: '< 5 mins queue (Recommended)', img: 'https://i.pinimg.com/736x/21/e4/20/21e420db5508a8a7caadca71ea0dcbc1.jpg' },
-      { name: 'Qutub Minar', load: 58, status: 'YELLOW', queue: '15 mins queue', img: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=400&q=80' },
-    ]
-  }
-};
+const CITY_HERO_DATA = Object.entries(MASTER_CITY_DATA).reduce((acc, [city, data]) => {
+  acc[city] = {
+    state: data.state,
+    title: `${data.name} — ${data.tagline.split(' ')[0]} ${data.tagline.split(' ')[1] || ''}`,
+    tagline: data.tagline,
+    image: data.heroImage,
+    weather: data.weather,
+    bestTime: data.bestTime,
+    monuments: data.monuments.map(m => ({
+      name: m.name,
+      load: m.load,
+      status: m.status,
+      queue: m.queue,
+      img: m.img,
+      operatingHours: m.operatingHours,
+      ecoRules: m.ecoRules,
+      sustainabilityRating: m.sustainabilityRating
+    }))
+  };
+  return acc;
+}, {});
 
 // ─── Realistic Fallback Itinerary Data ────────────────────────────────────────
 
@@ -487,6 +442,21 @@ function CityDestinationHub({ selectedCity, onQuickStart, liveWeather }) {
                   <Clock size={11} className="text-emerald-700 shrink-0" />
                   {mon.queue}
                 </div>
+                {mon.operatingHours && (
+                  <div className="text-[10px] text-slate-600 mt-1 font-medium truncate">
+                    🕒 {mon.operatingHours}
+                  </div>
+                )}
+                {mon.ecoRules && (
+                  <div className="text-[9.5px] text-emerald-800 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 mt-1 truncate">
+                    🌱 {mon.ecoRules}
+                  </div>
+                )}
+                {mon.sustainabilityRating && (
+                  <div className="text-[9.5px] text-slate-600 font-bold mt-1">
+                    ⭐ {mon.sustainabilityRating}
+                  </div>
+                )}
               </div>
 
               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">

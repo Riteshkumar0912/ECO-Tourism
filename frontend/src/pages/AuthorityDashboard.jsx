@@ -11,36 +11,11 @@ import { useSocket } from '../context/SocketContext';
 import {
   Shield, AlertTriangle, Users, TrendingUp, Activity,
   Zap, RefreshCw, MapPin, Clock, CheckCircle,
-  ChevronDown, Bell, Eye, Navigation, BarChart2, X, Ticket, Download, FileText
 } from 'lucide-react';
+import { CITY_COORDINATES, ALL_MONUMENT_COORDS } from '../data/cityData';
 
-const CITY_CENTRES = {
-  Jaipur:   [26.9124, 75.7873],
-  Agra:     [27.1767, 78.0081],
-  Varanasi: [25.3176, 82.9739],
-  Goa:      [15.2993, 74.1240],
-  Delhi:    [28.6139, 77.2090],
-};
-
-const MONUMENT_COORDS = {
-  'Amber Fort':              [26.9855, 75.8513],
-  'Jaigarh Fort':            [26.9917, 75.8458],
-  'Hawa Mahal':              [26.9239, 75.8267],
-  'City Palace Jaipur':      [26.9258, 75.8237],
-  'Nahargarh Fort':          [26.9394, 75.8042],
-  'Taj Mahal':               [27.1751, 78.0421],
-  'Mehtab Bagh':             [27.1826, 78.0361],
-  'Agra Fort':               [27.1795, 78.0211],
-  'Dashashwamedh Ghat':      [25.3075, 83.0107],
-  'Assi Ghat':               [25.2855, 83.0132],
-  'Sarnath Archaeological Site': [25.3810, 83.0229],
-  'Baga Beach':              [15.5522, 73.7519],
-  'Morjim Beach':            [15.6347, 73.7326],
-  'Aguada Fort':             [15.5012, 73.7727],
-  'India Gate':              [28.6129, 77.2295],
-  "Humayun's Tomb":          [28.5933, 77.2507],
-  'Qutub Minar':             [28.5245, 77.1855],
-};
+const CITY_CENTRES = CITY_COORDINATES;
+const MONUMENT_COORDS = ALL_MONUMENT_COORDS;
 
 function makeMarkerIcon(status, load) {
   const colors = { GREEN: '#047857', YELLOW: '#d97706', RED: '#b91c1c' };

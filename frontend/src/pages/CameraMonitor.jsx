@@ -8,13 +8,26 @@ import {
 } from 'lucide-react';
 
 const MONUMENTS = [
+  { name: 'Red Fort',             city: 'Delhi',     maxCapacity: 3500 },
+  { name: 'Safdarjung Tomb',      city: 'Delhi',     maxCapacity: 1500 },
   { name: 'Amber Fort',           city: 'Jaipur',    maxCapacity: 1000 },
+  { name: 'Jaigarh Fort',         city: 'Jaipur',    maxCapacity: 1200 },
   { name: 'Taj Mahal',            city: 'Agra',      maxCapacity: 2500 },
+  { name: 'Mehtab Bagh',          city: 'Agra',      maxCapacity: 1500 },
   { name: 'Dashashwamedh Ghat',   city: 'Varanasi',  maxCapacity: 3000 },
+  { name: 'Assi Ghat',            city: 'Varanasi',  maxCapacity: 2000 },
   { name: 'Baga Beach',           city: 'Goa',       maxCapacity: 2000 },
-  { name: 'India Gate',           city: 'Delhi',     maxCapacity: 4000 },
-  { name: 'Hawa Mahal',           city: 'Jaipur',    maxCapacity: 600  },
-  { name: 'Qutub Minar',          city: 'Delhi',     maxCapacity: 1800 },
+  { name: 'Morjim Beach',         city: 'Goa',       maxCapacity: 1500 },
+  { name: 'Gateway of India',     city: 'Mumbai',    maxCapacity: 3500 },
+  { name: 'Kanheri Caves',        city: 'Mumbai',    maxCapacity: 1200 },
+  { name: 'City Palace Udaipur',  city: 'Udaipur',   maxCapacity: 2500 },
+  { name: 'Sajjangarh Palace',    city: 'Udaipur',   maxCapacity: 1000 },
+  { name: 'Golden Temple Gate',   city: 'Amritsar',  maxCapacity: 4500 },
+  { name: 'Gobindgarh Fort',      city: 'Amritsar',  maxCapacity: 1500 },
+  { name: 'Victoria Memorial',    city: 'Kolkata',   maxCapacity: 3000 },
+  { name: 'Indian Museum',        city: 'Kolkata',   maxCapacity: 1800 },
+  { name: 'Lalbagh Glass House',  city: 'Bengaluru', maxCapacity: 2500 },
+  { name: 'Cubbon Park',          city: 'Bengaluru', maxCapacity: 3000 },
 ];
 
 function useFpsCounter() {

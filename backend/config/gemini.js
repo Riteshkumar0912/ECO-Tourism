@@ -3,10 +3,16 @@ const { GoogleGenAI } = require('@google/genai');
 // ─── KNOWN HIGH-DENSITY MONUMENTS (crowd rerouting reference) ────────────────
 const HIGH_DENSITY_SPOTS = {
   'Amber Fort':           { alternateSpot: 'Jaigarh Fort',      distanceKm: 1.2,  perk: '20% off entry + free heritage tea' },
-  'Taj Mahal':            { alternateSpot: 'Mehtab Bagh',       distanceKm: 3.5,  perk: '25% off sunset viewing + river view pass' },
-  'Dashashwamedh Ghat':  { alternateSpot: 'Assi Ghat',          distanceKm: 2.1,  perk: '15% off morning boat tour + chai voucher' },
+  'Taj Mahal':            { alternateSpot: 'Mehtab Bagh',       distanceKm: 2.1,  perk: '25% off sunset viewing + river view pass' },
+  'Dashashwamedh Ghat':  { alternateSpot: 'Assi Ghat',          distanceKm: 4.2,  perk: '15% off morning boat tour + chai voucher' },
   'Baga Beach':           { alternateSpot: 'Morjim Beach',       distanceKm: 14.0, perk: 'Free welcome drink at Morjim Shack' },
+  'Red Fort':             { alternateSpot: 'Safdarjung Tomb',   distanceKm: 3.4,  perk: 'Free Heritage Audio Guide + 20% Metro Pass Rebate' },
   'India Gate':           { alternateSpot: "Humayun's Tomb",    distanceKm: 4.8,  perk: '20% off entry + museum audio guide' },
+  'Gateway of India':     { alternateSpot: 'Kanheri Caves',     distanceKm: 8.5,  perk: '20% Heritage Ferry Discount + Audio Guide' },
+  'City Palace Udaipur':  { alternateSpot: 'Sajjangarh Monsoon Palace', distanceKm: 5.1, perk: 'Rooftop Sunset Pass + Herbal Refreshment' },
+  'Golden Temple Main Gate': { alternateSpot: 'Gobindgarh Fort', distanceKm: 3.2, perk: 'Cultural Show Ticket + Craft Discount' },
+  'Victoria Memorial':    { alternateSpot: 'Indian Museum',     distanceKm: 2.8,  perk: '15% Tram Heritage Ride Voucher' },
+  'Lalbagh Botanical Garden Glass House': { alternateSpot: 'Cubbon Park', distanceKm: 4.0, perk: 'Organic Garden Refreshment + Audio Map' }
 };
 
 // ─── FALLBACK ITINERARY TEMPLATES ────────────────────────────────────────────
@@ -29,14 +35,6 @@ const FALLBACK_TEMPLATES = {
           { placeName: 'City Palace Jaipur', timeSlot: '11:00 AM - 02:00 PM', estimatedCost: 200, category: 'Heritage', practicalTip: 'Museum inside has Maharaja arms & royal carriages. Wear comfortable shoes.' },
           { placeName: 'Jantar Mantar', timeSlot: '02:30 PM - 04:00 PM', estimatedCost: 50, category: 'Heritage', practicalTip: 'UNESCO site — hire a local guide to explain the astronomical instruments.' },
         ]
-      },
-      {
-        day: 3, theme: 'Bazaars & Local Flavours',
-        places: [
-          { placeName: 'Johari Bazaar', timeSlot: '10:00 AM - 12:30 PM', estimatedCost: 1500, category: 'Shopping', practicalTip: 'Best for semi-precious gemstone jewellery. Bargain firmly — expect 30% markup.' },
-          { placeName: 'Albert Hall Museum', timeSlot: '01:00 PM - 03:00 PM', estimatedCost: 40, category: 'Museum', practicalTip: 'The oldest museum in Rajasthan — Egyptian mummy and royal artefacts highlight.' },
-          { placeName: 'Chokhi Dhani', timeSlot: '06:00 PM - 09:30 PM', estimatedCost: 900, category: 'Food', practicalTip: 'All-inclusive folk village experience with Rajasthani thali dinner. Book ahead.' },
-        ]
       }
     ]
   },
@@ -48,13 +46,6 @@ const FALLBACK_TEMPLATES = {
         places: [
           { placeName: 'Taj Mahal', timeSlot: '06:00 AM - 09:00 AM', estimatedCost: 1150, category: 'Heritage', practicalTip: 'Enter at sunrise for golden light and fewest crowds. Buy tickets online.' },
           { placeName: 'Mehtab Bagh', timeSlot: '05:00 PM - 07:00 PM', estimatedCost: 30, category: 'Nature', practicalTip: 'North bank garden directly opposite Taj — best sunset view with river foreground.' },
-        ]
-      },
-      {
-        day: 2, theme: 'Mughal Fortresses',
-        places: [
-          { placeName: 'Agra Fort', timeSlot: '08:00 AM - 11:00 AM', estimatedCost: 640, category: 'Heritage', practicalTip: 'Red sandstone marvel where Shah Jahan was imprisoned. Taj visible from Musamman Burj.' },
-          { placeName: 'Fatehpur Sikri', timeSlot: '01:00 PM - 04:30 PM', estimatedCost: 610, category: 'Heritage', practicalTip: '40 km from Agra. Abandoned Mughal capital — hire a guide for historical context.' },
         ]
       }
     ]
@@ -68,13 +59,6 @@ const FALLBACK_TEMPLATES = {
           { placeName: 'Dashashwamedh Ghat', timeSlot: '05:00 AM - 07:30 AM', estimatedCost: 0, category: 'Religious', practicalTip: 'Early morning aarti boat ride recommended. Hire a boat at Assi Ghat to avoid touts.' },
           { placeName: 'Assi Ghat', timeSlot: '06:00 PM - 08:00 PM', estimatedCost: 0, category: 'Religious', practicalTip: 'Evening yoga and smaller, intimate aarti ceremony — less crowded than Dashashwamedh.' },
         ]
-      },
-      {
-        day: 2, theme: 'Ancient Temples & Archaeology',
-        places: [
-          { placeName: 'Kashi Vishwanath Temple', timeSlot: '06:00 AM - 08:00 AM', estimatedCost: 0, category: 'Religious', practicalTip: 'One of the 12 Jyotirlingas. Deposit phone and bags at locker before entry.' },
-          { placeName: 'Sarnath Archaeological Site', timeSlot: '10:00 AM - 01:00 PM', estimatedCost: 530, category: 'Heritage', practicalTip: 'Where Buddha gave his first sermon. Visit the Sarnath Museum for the Lion Capital original.' },
-        ]
       }
     ]
   },
@@ -87,13 +71,6 @@ const FALLBACK_TEMPLATES = {
           { placeName: 'Morjim Beach', timeSlot: '08:00 AM - 12:00 PM', estimatedCost: 300, category: 'Beach', practicalTip: 'Olive Ridley turtle nesting site. Quieter alternative to Baga with Russian shacks.' },
           { placeName: 'Aguada Fort', timeSlot: '02:00 PM - 04:30 PM', estimatedCost: 0, category: 'Heritage', practicalTip: '17th century Portuguese fort with the oldest lighthouse in Asia. Sunset spectacular.' },
         ]
-      },
-      {
-        day: 2, theme: 'Cultural Goa',
-        places: [
-          { placeName: 'Basilica of Bom Jesus', timeSlot: '09:00 AM - 11:00 AM', estimatedCost: 0, category: 'Religious', practicalTip: 'UNESCO World Heritage. Houses St. Francis Xavier\'s relics. Dress modestly.' },
-          { placeName: 'Fontainhas Latin Quarter', timeSlot: '11:30 AM - 01:30 PM', estimatedCost: 0, category: 'Heritage', practicalTip: 'Goa\'s charming Portuguese heritage neighbourhood — great for photography and bakeries.' },
-        ]
       }
     ]
   },
@@ -103,17 +80,68 @@ const FALLBACK_TEMPLATES = {
       {
         day: 1, theme: 'Mughal & Colonial Delhi',
         places: [
-          { placeName: "Humayun's Tomb", timeSlot: '08:00 AM - 10:30 AM', estimatedCost: 585, category: 'Heritage', practicalTip: 'UNESCO precursor to the Taj Mahal. Gardens are pristine — great for early photography.' },
-          { placeName: 'India Gate', timeSlot: '05:00 PM - 07:00 PM', estimatedCost: 0, category: 'Heritage', practicalTip: 'Visit at dusk for the illuminated memorial. Avoid summer afternoons — it\'s extremely hot.' },
-          { placeName: 'Connaught Place', timeSlot: '07:30 PM - 09:30 PM', estimatedCost: 800, category: 'Food', practicalTip: 'Vibrant central hub for dinner — try Wengers, United Coffee House, or Rajma Chawal at Sagar Ratna.' },
+          { placeName: 'Red Fort', timeSlot: '09:30 AM - 12:30 PM', estimatedCost: 500, category: 'Heritage', practicalTip: 'Iconic red sandstone Mughal fortress. Explore Lahori Gate & Diwan-i-Khas.' },
+          { placeName: 'Safdarjung Tomb', timeSlot: '03:00 PM - 05:30 PM', estimatedCost: 50, category: 'Heritage', practicalTip: 'Tranquil garden tomb with zero crowds. Ideal for peaceful evening walk.' },
         ]
-      },
+      }
+    ]
+  },
+  Mumbai: {
+    cityOverview: 'Financial capital of India — Victorian Gothic landmarks, coastal promenades, and film heritage.',
+    days: [
       {
-        day: 2, theme: 'Islamic Heritage & Old Delhi',
+        day: 1, theme: 'Colonial Architecture & Marine Bay',
         places: [
-          { placeName: 'Qutub Minar', timeSlot: '08:00 AM - 10:30 AM', estimatedCost: 585, category: 'Heritage', practicalTip: 'UNESCO site — visit the Iron Pillar that hasn\'t rusted in 1600 years.' },
-          { placeName: 'Jama Masjid', timeSlot: '12:00 PM - 01:30 PM', estimatedCost: 0, category: 'Religious', practicalTip: 'India\'s largest mosque. Cover your head and remove shoes. Minarets offer panoramic views.' },
-          { placeName: 'Chandni Chowk', timeSlot: '02:00 PM - 04:30 PM', estimatedCost: 600, category: 'Food', practicalTip: 'Street food paradise — try Paranthe Wali Gali, Jalebi at Old Famous, and Daulat Ki Chaat.' },
+          { placeName: 'Gateway of India', timeSlot: '08:00 AM - 10:30 AM', estimatedCost: 0, category: 'Heritage', practicalTip: 'Iconic harbor arch. Enter early to beat ferry crowds.' },
+          { placeName: 'Kanheri Caves', timeSlot: '11:30 AM - 02:30 PM', estimatedCost: 200, category: 'Heritage', practicalTip: 'Buddhist cave complex inside Sanjay Gandhi National Park.' },
+        ]
+      }
+    ]
+  },
+  Udaipur: {
+    cityOverview: 'City of Lakes — majestic Mewar royal palaces and serene desert waters.',
+    days: [
+      {
+        day: 1, theme: 'Royal Mewar Palaces & Lakes',
+        places: [
+          { placeName: 'City Palace Udaipur', timeSlot: '09:00 AM - 12:00 PM', estimatedCost: 300, category: 'Heritage', practicalTip: 'Explore Mewar royal armory and lake balconies.' },
+          { placeName: 'Sajjangarh Monsoon Palace', timeSlot: '04:00 PM - 06:30 PM', estimatedCost: 100, category: 'Heritage', practicalTip: 'Hilltop sanctuary offering panoramic sunset over Lake Pichola.' },
+        ]
+      }
+    ]
+  },
+  Amritsar: {
+    cityOverview: 'Spiritual capital of Sikhism — home to the Golden Temple and Punjabi heritage.',
+    days: [
+      {
+        day: 1, theme: 'Golden Sanctuary & Fortresses',
+        places: [
+          { placeName: 'Golden Temple Main Gate', timeSlot: '06:00 AM - 09:00 AM', estimatedCost: 0, category: 'Religious', practicalTip: 'Serene morning atmosphere and world-famous free langar.' },
+          { placeName: 'Gobindgarh Fort', timeSlot: '02:00 PM - 05:00 PM', estimatedCost: 150, category: 'Heritage', practicalTip: '18th-century Sikh military fortress and cultural museum.' },
+        ]
+      }
+    ]
+  },
+  Kolkata: {
+    cityOverview: 'City of Joy — imperial marble monuments, literary cafes, and artistic heritage.',
+    days: [
+      {
+        day: 1, theme: 'Marble Monuments & Cultural Guilds',
+        places: [
+          { placeName: 'Victoria Memorial', timeSlot: '10:00 AM - 01:00 PM', estimatedCost: 50, category: 'Heritage', practicalTip: 'White marble museum surrounded by formal botanical gardens.' },
+          { placeName: 'Indian Museum', timeSlot: '02:00 PM - 04:30 PM', estimatedCost: 50, category: 'Museum', practicalTip: 'Ninth oldest museum in the world with rare heritage galleries.' },
+        ]
+      }
+    ]
+  },
+  Bengaluru: {
+    cityOverview: 'Garden City & Tech Hub — royal palaces, botanical glasshouses, and eco parks.',
+    days: [
+      {
+        day: 1, theme: 'Botanical Canopies & Royal Grounds',
+        places: [
+          { placeName: 'Lalbagh Botanical Garden Glass House', timeSlot: '08:00 AM - 11:00 AM', estimatedCost: 30, category: 'Nature', practicalTip: '240-acre glasshouse botanical sanctuary.' },
+          { placeName: 'Cubbon Park', timeSlot: '03:00 PM - 06:00 PM', estimatedCost: 0, category: 'Nature', practicalTip: 'Shaded eco canopy walks in the heart of Bengaluru.' },
         ]
       }
     ]
