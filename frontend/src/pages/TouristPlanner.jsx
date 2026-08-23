@@ -11,6 +11,8 @@ import {
   ShieldCheck, Ticket, Check, Sun, Award
 } from 'lucide-react';
 
+import { VERIFIED_MONUMENTS } from '../data/monumentData';
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
@@ -30,22 +32,13 @@ const STATUS_CONFIG = {
   RED:    { label: 'High Density (92%)', color: 'text-red-800',     bg: 'bg-red-50',     border: 'border-red-200',     dot: 'bg-red-600' },
 };
 
-const PLACE_IMAGES = {
-  'Amber Fort': 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=700&q=80',
-  'Jaigarh Fort': 'https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=700&q=80',
-  'Hawa Mahal': 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=700&q=80',
-  'Taj Mahal': 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=700&q=80',
-  'Mehtab Bagh': 'https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?auto=format&fit=crop&w=700&q=80',
-  'Agra Fort': 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=700&q=80',
-  'Dashashwamedh Ghat': 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=700&q=80',
-  'Assi Ghat': 'https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=700&q=80',
-  'India Gate': 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=700&q=80',
-  'Qutub Minar': 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=700&q=80',
-  "Humayun's Tomb": 'https://i.pinimg.com/736x/21/e4/20/21e420db5508a8a7caadca71ea0dcbc1.jpg',
-  'Baga Beach': 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=700&q=80',
-  'Morjim Beach': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80',
-  'Aguada Fort': 'https://images.unsplash.com/photo-1587922546307-776227941871?auto=format&fit=crop&w=700&q=80',
-};
+const PLACE_IMAGES = Object.entries(VERIFIED_MONUMENTS).reduce((acc, [name, data]) => {
+  acc[name] = data.image;
+  return acc;
+}, {
+  'Agra Fort': 'https://images.unsplash.com/photo-1548013146-72479768bbaa?w=800&auto=format&fit=crop&q=80',
+  'Aguada Fort': 'https://images.unsplash.com/photo-1587922546307-776227941871?w=800&auto=format&fit=crop&q=80',
+});
 
 // ─── City Hero Showcase Data ──────────────────────────────────────────────────
 
@@ -199,8 +192,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~55m Long Queue",
     altQueue: "< 5m Instant Entry",
     perk: "Free Heritage Audio Guide + 20% Metro Pass Rebate",
-    primaryImg: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600",
-    altImg: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Red Fort"].image,
+    altImg: VERIFIED_MONUMENTS["Safdarjung Tomb"].image
   },
   Jaipur: {
     primary: "Amber Fort",
@@ -210,8 +203,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~45m Long Queue",
     altQueue: "< 5m Instant Entry",
     perk: "20% Entry Discount + Partner Hospitality Perk",
-    primaryImg: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600",
-    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Amber Fort"].image,
+    altImg: VERIFIED_MONUMENTS["Jaigarh Fort"].image
   },
   Agra: {
     primary: "Taj Mahal",
@@ -221,8 +214,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~65m Long Queue",
     altQueue: "< 10m Instant Entry",
     perk: "Sunset View Point Access + 25% Souvenir Voucher",
-    primaryImg: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600",
-    altImg: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Taj Mahal"].image,
+    altImg: VERIFIED_MONUMENTS["Mehtab Bagh"].image
   },
   Varanasi: {
     primary: "Dashashwamedh Ghat",
@@ -232,8 +225,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~50m Crowd Congestion",
     altQueue: "< 5m Peaceful Access",
     perk: "Eco-Boat Ride Pass + Cultural Tea Voucher",
-    primaryImg: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600",
-    altImg: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Dashashwamedh Ghat"].image,
+    altImg: VERIFIED_MONUMENTS["Assi Ghat & Sarnath"].image
   },
   Goa: {
     primary: "Baga Beach",
@@ -243,8 +236,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~45m Peak Traffic",
     altQueue: "< 5m Quiet Zone Entry",
     perk: "Complimentary Welcome Drink at Morjim Shack",
-    primaryImg: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600",
-    altImg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Baga Beach"].image,
+    altImg: VERIFIED_MONUMENTS["Morjim Beach"].image
   },
   Mumbai: {
     primary: "Gateway of India",
@@ -254,8 +247,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~50m Rush Hour Queue",
     altQueue: "< 10m Eco Trail Access",
     perk: "20% Heritage Ferry Discount + Audio Guide",
-    primaryImg: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600",
-    altImg: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Gateway of India"].image,
+    altImg: VERIFIED_MONUMENTS["Kanheri Caves"].image
   },
   Udaipur: {
     primary: "City Palace Udaipur",
@@ -265,8 +258,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~40m Entrance Queue",
     altQueue: "< 5m Scenic Entry",
     perk: "Rooftop Sunset Pass + Herbal Refreshment",
-    primaryImg: "https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?w=600",
-    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+    primaryImg: VERIFIED_MONUMENTS["City Palace Udaipur"].image,
+    altImg: VERIFIED_MONUMENTS["Sajjangarh Monsoon Palace"].image
   },
   Amritsar: {
     primary: "Golden Temple Main Gate",
@@ -276,8 +269,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~60m Queue",
     altQueue: "< 5m Instant Entry",
     perk: "Cultural Show Ticket + Heritage Craft Discount",
-    primaryImg: "https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=600",
-    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Golden Temple Main Gate"].image,
+    altImg: VERIFIED_MONUMENTS["Gobindgarh Fort"].image
   },
   Kolkata: {
     primary: "Victoria Memorial",
@@ -287,8 +280,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~45m Entry Queue",
     altQueue: "< 5m Quiet Garden Access",
     perk: "15% Tram Heritage Ride Voucher",
-    primaryImg: "https://images.unsplash.com/photo-1558431382-27e303142255?w=600",
-    altImg: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Victoria Memorial"].image,
+    altImg: VERIFIED_MONUMENTS["Indian Museum"].image
   },
   Bengaluru: {
     primary: "Lalbagh Botanical Garden Glass House",
@@ -298,8 +291,8 @@ export const CITY_CROWD_REGISTRY = {
     primaryQueue: "~35m Gate Queue",
     altQueue: "< 5m Eco Canopy Walk",
     perk: "Organic Garden Refreshment + Audio Map",
-    primaryImg: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600",
-    altImg: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=600"
+    primaryImg: VERIFIED_MONUMENTS["Lalbagh Botanical Garden Glass House"].image,
+    altImg: VERIFIED_MONUMENTS["Cubbon Park"].image
   }
 };
 
