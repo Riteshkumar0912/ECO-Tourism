@@ -121,24 +121,25 @@ const FALLBACK_TEMPLATES = {
 };
 
 // ─── FALLBACK GENERATOR ───────────────────────────────────────────────────────
-function generateFallbackItinerary({ destination, budget, days, interests }) {
-  const city = destination.trim();
-  const template = FALLBACK_TEMPLATES[city];
+function generateFallbackItinerary({ destination, city, budget, days, interests }) {
+  const targetCity = (city || destination || 'Jaipur').trim();
+  const templateKey = Object.keys(FALLBACK_TEMPLATES).find(k => k.toLowerCase() === targetCity.toLowerCase());
+  const template = templateKey ? FALLBACK_TEMPLATES[templateKey] : null;
 
   if (!template) {
     return {
-      destination: city,
+      destination: targetCity,
       budget,
       days,
       interests,
-      cityOverview: `Explore the rich culture and heritage of ${city}, one of India's vibrant destinations.`,
+      cityOverview: `Explore the rich culture and heritage of ${targetCity}, one of India's vibrant destinations.`,
       generatedBy: 'smart-tourism-fallback-v1',
       schedule: Array.from({ length: days }, (_, i) => ({
         day: i + 1,
-        theme: `Day ${i + 1} — Discover ${city}`,
+        theme: `Day ${i + 1} — Discover ${targetCity}`,
         places: [
-          { placeName: `${city} Central Museum`, timeSlot: '09:00 AM - 12:00 PM', estimatedCost: Math.round(budget * 0.05), category: 'Museum', practicalTip: 'Start with local museum for historical context.', crowdStatus: 'GREEN', isAlternative: false },
-          { placeName: `${city} Heritage Walk`, timeSlot: '03:00 PM - 06:00 PM', estimatedCost: Math.round(budget * 0.03), category: 'Heritage', practicalTip: 'Join guided heritage walks for curated insights.', crowdStatus: 'GREEN', isAlternative: false },
+          { placeName: `${targetCity} Central Museum`, timeSlot: '09:00 AM - 12:00 PM', estimatedCost: Math.round(budget * 0.05), category: 'Museum', practicalTip: `Start with local museum in ${targetCity} for historical context.`, crowdStatus: 'GREEN', isAlternative: false },
+          { placeName: `${targetCity} Heritage Walk`, timeSlot: '03:00 PM - 06:00 PM', estimatedCost: Math.round(budget * 0.03), category: 'Heritage', practicalTip: `Join guided heritage walks through ${targetCity}.`, crowdStatus: 'GREEN', isAlternative: false },
         ]
       })),
       crowdAlerts: [],
@@ -147,7 +148,19 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
     };
   }
 
-  const scheduledDays = template.days.slice(0, days);
+  let scheduledDays = template.days.slice(0, days);
+  if (scheduledDays.length < days) {
+    for (let i = scheduledDays.length; i < days; i++) {
+      scheduledDays.push({
+        day: i + 1,
+        theme: `Day ${i + 1} — Local Hidden Gems of ${templateKey}`,
+        places: [
+          { placeName: `${templateKey} Crafts & Heritage Center`, timeSlot: '10:00 AM - 01:00 PM', estimatedCost: Math.round(budget * 0.04), category: 'Heritage', practicalTip: `Discover local artisanal heritage of ${templateKey}.` },
+          { placeName: `${templateKey} Sunset View Point`, timeSlot: '05:00 PM - 07:00 PM', estimatedCost: Math.round(budget * 0.02), category: 'Nature', practicalTip: 'Panoramic views with zero entry queue.' }
+        ]
+      });
+    }
+  }
 
   const schedule = scheduledDays.map(dayData => ({
     day: dayData.day,
@@ -175,7 +188,7 @@ function generateFallbackItinerary({ destination, budget, days, interests }) {
   }));
 
   return {
-    destination: city,
+    destination: templateKey || targetCity,
     budget,
     days,
     interests,
@@ -208,35 +221,45 @@ function getAIClient() {
 }
 
 // ─── 1. PERSONALIZED ECO-ITINERARY GENERATOR ────────────────────────────────
-async function generateSmartItinerary({ destination, budget, days, interests }) {
+async function generateSmartItinerary({ destination, city, budget, days, travelPace, interests }) {
   const client = getAIClient();
+  const targetCity = (city || destination || 'Jaipur').trim();
 
   if (!client) {
-    console.log('ℹ️  Gemini API key not configured — using smart fallback generator.');
-    return generateFallbackItinerary({ destination, budget, days, interests });
+    console.log(`ℹ️  Gemini API key not configured — using smart fallback generator for ${targetCity}.`);
+    return generateFallbackItinerary({ destination: targetCity, city: targetCity, budget, days, interests });
   }
 
-  const interestsList = Array.isArray(interests) ? interests.join(', ') : interests;
+  const interestsList = Array.isArray(interests) ? interests.join(', ') : (interests || 'Heritage, Culture, Eco-friendly');
+  const pace = travelPace || 'Moderate';
 
-  const prompt = `You are an expert Indian tourism planner with real-time crowd intelligence.
+  const prompt = `You are an expert sustainable tourism planner with real-time crowd intelligence.
+Create a personalized day-wise eco-travel itinerary strictly for the city: "${targetCity}", India.
 
-Generate a detailed ${days}-day travel itinerary for ${destination}, India.
-Tourist budget: ₹${budget} total for ${days} days.
-Interests: ${interestsList}.
+CRITICAL LOCATION RULE:
+ONLY include authentic monuments, heritage sites, markets, and attractions located strictly within "${targetCity}".
+Do NOT include places from other cities under any circumstances (for example: if city is Delhi, ONLY include Delhi attractions such as Humayun's Tomb, Qutub Minar, Red Fort, India Gate, Lotus Temple, Chandni Chowk, Jama Masjid, etc. Do NOT include Jaipur or Agra monuments).
+
+Trip parameters:
+- City: ${targetCity}
+- Duration: ${days} days
+- Budget: ₹${budget} total for ${days} days
+- Travel Pace: ${pace}
+- Interests: ${interestsList}
 
 Rules:
 1. Generate exactly ${days} days of schedule.
-2. Each day must have 2-3 places to visit.
-3. For each place provide: placeName, timeSlot (e.g. "09:00 AM - 12:00 PM"), estimatedCost (in INR integer), category (one of: Heritage, Religious, Beach, Nature, Museum, Adventure, Food, Shopping), practicalTip (one helpful, specific local tip).
+2. Each day must have 2-3 places to visit strictly in ${targetCity}.
+3. For each place provide: placeName, timeSlot (e.g. "09:00 AM - 12:00 PM"), estimatedCost (in INR integer), category (one of: Heritage, Religious, Beach, Nature, Museum, Adventure, Food, Shopping), practicalTip (one helpful, specific local tip for ${targetCity}).
 4. crowdStatus: If the place is known to be high-density (Amber Fort, Taj Mahal, Dashashwamedh Ghat, Baga Beach, India Gate), set crowdStatus to "RED" and include alternateSpot with: name, distanceKm, incentive.
 5. isAlternative: true only if this place was added as a crowd-diversion alternative.
-6. Include a cityOverview (2-sentence description), budgetBreakdown object, and totalEstimatedCost.
+6. Include a cityOverview (2-sentence description of ${targetCity}), budgetBreakdown object, and totalEstimatedCost.
 7. Ensure totalEstimatedCost is <= budget.
 8. Return ONLY valid JSON — no markdown fences, no commentary.
 
 JSON schema:
 {
-  "destination": string,
+  "destination": "${targetCity}",
   "budget": number,
   "days": number,
   "interests": [string],
@@ -280,12 +303,13 @@ JSON schema:
     const rawText = response.text();
     const parsed = JSON.parse(rawText);
     parsed.generatedBy = 'gemini-ai';
-    console.log(`✅ Gemini AI itinerary generated for ${destination} (${days} days)`);
+    parsed.destination = targetCity;
+    console.log(`✅ Gemini AI itinerary generated for ${targetCity} (${days} days)`);
     return parsed;
 
   } catch (err) {
-    console.warn(`⚠️  Gemini API error: ${err.message} — falling back to smart generator.`);
-    return generateFallbackItinerary({ destination, budget, days, interests });
+    console.warn(`⚠️  Gemini API error: ${err.message} — falling back to smart generator for ${targetCity}.`);
+    return generateFallbackItinerary({ destination: targetCity, city: targetCity, budget, days, interests });
   }
 }
 

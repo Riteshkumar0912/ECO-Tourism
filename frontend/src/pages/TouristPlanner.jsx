@@ -915,7 +915,7 @@ export default function TouristPlanner() {
       const res = await fetch(`${API_BASE}/api/itinerary/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ destination, budget: useBudget, days: useDays, interests: useInterests }),
+        body: JSON.stringify({ city: destination, destination, budget: useBudget, days: useDays, interests: useInterests }),
       });
 
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
