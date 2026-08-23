@@ -13,6 +13,7 @@ import {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
 const CITIES = ['Jaipur', 'Agra', 'Varanasi', 'Goa', 'Delhi'];
 
 const INTEREST_OPTIONS = [
@@ -860,7 +861,7 @@ export default function TouristPlanner() {
     let isMounted = true;
     async function getWeather() {
       try {
-        const res = await fetch(`/api/weather?city=${destination}`);
+        const res = await fetch(`${API_BASE}/api/weather?city=${destination}`);
         if (res.ok) {
           const json = await res.json();
           if (json.success && isMounted) {
@@ -911,7 +912,7 @@ export default function TouristPlanner() {
     const useInterests = overrideInterests || interests;
 
     try {
-      const res = await fetch('/api/itinerary/generate', {
+      const res = await fetch(`${API_BASE}/api/itinerary/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ destination, budget: useBudget, days: useDays, interests: useInterests }),
@@ -979,7 +980,7 @@ export default function TouristPlanner() {
 
     let voucherData = null;
     try {
-      const claimRes = await fetch('/api/coupons/claim', {
+      const claimRes = await fetch(`${API_BASE}/api/coupons/claim`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponInfo.code, touristName: 'Tourist' }),

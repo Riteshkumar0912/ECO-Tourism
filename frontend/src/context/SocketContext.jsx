@@ -13,7 +13,8 @@ export const useSocket = () => {
 
 // ─── Provider ────────────────────────────────────────────────────────────────
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
+const SOCKET_URL  = (import.meta.env.VITE_SOCKET_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
 const DEFAULT_CITY = 'Jaipur';
 
 export function SocketProvider({ children }) {
@@ -30,7 +31,9 @@ export function SocketProvider({ children }) {
   // ── Fetch initial monument data for selected city ─────────────────────────
   const fetchMonuments = useCallback(async (city) => {
     try {
-      const url = city ? `/api/monuments?city=${encodeURIComponent(city)}` : '/api/monuments';
+      const url = city 
+        ? `${BACKEND_URL}/api/monuments?city=${encodeURIComponent(city)}` 
+        : `${BACKEND_URL}/api/monuments`;
       const res  = await fetch(url);
       const json = await res.json();
       if (json.success) setMonuments(json.data);
@@ -41,7 +44,7 @@ export function SocketProvider({ children }) {
 
   // ── Socket setup ──────────────────────────────────────────────────────────
   useEffect(() => {
-    const socket = io(BACKEND_URL, {
+    const socket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1500,

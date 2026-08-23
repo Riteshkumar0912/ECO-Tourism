@@ -162,6 +162,8 @@ export default function HotelBooking() {
   const [passModalBooking, setPassModalBooking] = useState(null);
 
   // Fetch Live Hotels from Backend API
+const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
+
   useEffect(() => {
     let isMounted = true;
     async function fetchHotels() {
@@ -175,7 +177,7 @@ export default function HotelBooking() {
           sort: sortBy === 'PRICE_LOW' ? 'price_asc' : sortBy === 'RATING' ? 'rating_desc' : 'recommended'
         });
 
-        const res = await fetch(`/api/hotels?${params.toString()}`);
+        const res = await fetch(`${API_BASE}/api/hotels?${params.toString()}`);
         if (res.ok) {
           const json = await res.json();
           if (json.success && isMounted) {
