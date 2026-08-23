@@ -14,7 +14,7 @@ import {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
-const CITIES = ['Jaipur', 'Agra', 'Varanasi', 'Goa', 'Delhi'];
+const CITIES = ['Jaipur', 'Agra', 'Varanasi', 'Goa', 'Delhi', 'Mumbai', 'Udaipur', 'Amritsar', 'Kolkata', 'Bengaluru'];
 
 const INTEREST_OPTIONS = [
   { id: 'Heritage',   label: 'Heritage & History', icon: Landmark },
@@ -190,54 +190,149 @@ const COUPON_MAP = {
   'Qutub Minar':         { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 8.5,  perk: '20% Entry Discount + Museum Pass',         businessName: 'Delhi Heritage Audio Guides' },
 };
 
-const CITY_REROUTE_CONFIG = {
+export const CITY_CROWD_REGISTRY = {
   Delhi: {
     primary: "Red Fort",
     alternate: "Safdarjung Tomb",
-    distance: "3.4 km from Red Fort",
-    saturation: "91%",
-    queue: "~55m Long Queue",
+    distance: "3.4 km",
+    saturation: "92%",
+    primaryQueue: "~55m Long Queue",
     altQueue: "< 5m Instant Entry",
-    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600",
-    altImage: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?w=600"
+    perk: "Free Heritage Audio Guide + 20% Metro Pass Rebate",
+    primaryImg: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600",
+    altImg: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?w=600"
   },
   Jaipur: {
     primary: "Amber Fort",
     alternate: "Jaigarh Fort",
-    distance: "1.2 km from Amber Fort",
-    saturation: "92%",
-    queue: "~45m Long Queue",
+    distance: "1.2 km",
+    saturation: "94%",
+    primaryQueue: "~45m Long Queue",
     altQueue: "< 5m Instant Entry",
-    image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600",
-    altImage: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+    perk: "20% Entry Discount + Partner Hospitality Perk",
+    primaryImg: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600",
+    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
   },
   Agra: {
     primary: "Taj Mahal",
-    alternate: "Mehtab Bagh",
-    distance: "2.1 km from Taj Mahal",
-    saturation: "95%",
-    queue: "~60m Long Queue",
+    alternate: "Mehtab Bagh & Itimad-ud-Daulah",
+    distance: "2.1 km",
+    saturation: "96%",
+    primaryQueue: "~65m Long Queue",
     altQueue: "< 10m Instant Entry",
-    image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600",
-    altImage: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=600"
+    perk: "Sunset View Point Access + 25% Souvenir Voucher",
+    primaryImg: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600",
+    altImg: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=600"
   },
   Varanasi: {
     primary: "Dashashwamedh Ghat",
-    alternate: "Assi Ghat & Sarnath",
-    distance: "4.0 km from Dashashwamedh Ghat",
+    alternate: "Assi Ghat & Sarnath Heritage Complex",
+    distance: "4.2 km",
+    saturation: "91%",
+    primaryQueue: "~50m Crowd Congestion",
+    altQueue: "< 5m Peaceful Access",
+    perk: "Eco-Boat Ride Pass + Cultural Tea Voucher",
+    primaryImg: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600",
+    altImg: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?w=600"
+  },
+  Goa: {
+    primary: "Baga Beach",
+    alternate: "Morjim Beach & Chorao Island",
+    distance: "14.0 km",
+    saturation: "90%",
+    primaryQueue: "~45m Peak Traffic",
+    altQueue: "< 5m Quiet Zone Entry",
+    perk: "Complimentary Welcome Drink at Morjim Shack",
+    primaryImg: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600",
+    altImg: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
+  },
+  Mumbai: {
+    primary: "Gateway of India",
+    alternate: "Kanheri Caves & Elephanta Heritage Walk",
+    distance: "8.5 km",
+    saturation: "93%",
+    primaryQueue: "~50m Rush Hour Queue",
+    altQueue: "< 10m Eco Trail Access",
+    perk: "20% Heritage Ferry Discount + Audio Guide",
+    primaryImg: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600",
+    altImg: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"
+  },
+  Udaipur: {
+    primary: "City Palace Udaipur",
+    alternate: "Sajjangarh Monsoon Palace",
+    distance: "5.1 km",
     saturation: "89%",
-    queue: "~40m Long Queue",
+    primaryQueue: "~40m Entrance Queue",
+    altQueue: "< 5m Scenic Entry",
+    perk: "Rooftop Sunset Pass + Herbal Refreshment",
+    primaryImg: "https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?w=600",
+    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+  },
+  Amritsar: {
+    primary: "Golden Temple Main Gate",
+    alternate: "Gobindgarh Fort & Ram Bagh",
+    distance: "3.2 km",
+    saturation: "95%",
+    primaryQueue: "~60m Queue",
     altQueue: "< 5m Instant Entry",
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600",
-    altImage: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?w=600"
+    perk: "Cultural Show Ticket + Heritage Craft Discount",
+    primaryImg: "https://images.unsplash.com/photo-1588096344356-9b5797f1f91b?w=600",
+    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+  },
+  Kolkata: {
+    primary: "Victoria Memorial",
+    alternate: "Indian Museum & Marble Palace",
+    distance: "2.8 km",
+    saturation: "90%",
+    primaryQueue: "~45m Entry Queue",
+    altQueue: "< 5m Quiet Garden Access",
+    perk: "15% Tram Heritage Ride Voucher",
+    primaryImg: "https://images.unsplash.com/photo-1558431382-27e303142255?w=600",
+    altImg: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=600"
+  },
+  Bengaluru: {
+    primary: "Lalbagh Botanical Garden Glass House",
+    alternate: "Cubbon Park & Bangalore Palace",
+    distance: "4.0 km",
+    saturation: "88%",
+    primaryQueue: "~35m Gate Queue",
+    altQueue: "< 5m Eco Canopy Walk",
+    perk: "Organic Garden Refreshment + Audio Map",
+    primaryImg: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600",
+    altImg: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=600"
   }
 };
 
-const CITY_REROUTE_DATA = CITY_REROUTE_CONFIG;
-const CITY_REROUTE_DEFAULTS = CITY_REROUTE_CONFIG;
+export function getCityCrowdData(cityName) {
+  if (!cityName) cityName = 'Delhi';
+  const cleanCity = cityName.trim();
 
-function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
-  const cityConfig = CITY_REROUTE_CONFIG[currentCity] || CITY_REROUTE_CONFIG['Delhi'];
+  const matchedKey = Object.keys(CITY_CROWD_REGISTRY).find(
+    key => key.toLowerCase() === cleanCity.toLowerCase()
+  );
+
+  if (matchedKey) {
+    return CITY_CROWD_REGISTRY[matchedKey];
+  }
+
+  return {
+    primary: `${cleanCity} Central Landmark`,
+    alternate: `${cleanCity} Heritage & Eco Corridor`,
+    distance: "3.0 km",
+    saturation: "88%",
+    primaryQueue: "~30m Queue",
+    altQueue: "< 5m Instant Entry",
+    perk: "Complimentary Heritage Map & 15% Partner Rebate",
+    primaryImg: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600",
+    altImg: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=600"
+  };
+}
+
+const CITY_REROUTE_CONFIG = CITY_CROWD_REGISTRY;
+const CITY_REROUTE_DATA = CITY_CROWD_REGISTRY;
+
+function getCouponForMonument(monumentName, currentCity = 'Delhi') {
+  const cityConfig = getCityCrowdData(currentCity);
 
   if (monumentName && COUPON_MAP[monumentName]) {
     const coupon = COUPON_MAP[monumentName];
@@ -246,9 +341,9 @@ function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
       couponInfo: {
         ...coupon,
         saturation: cityConfig.saturation,
-        queue: cityConfig.queue,
+        queue: cityConfig.primaryQueue,
         altQueue: cityConfig.altQueue,
-        distKm: coupon.distKm || parseFloat(cityConfig.distance) || 2.5
+        distKm: coupon.distKm || parseFloat(cityConfig.distance) || 3.0
       }
     };
   }
@@ -264,9 +359,9 @@ function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
         couponInfo: {
           ...coupon,
           saturation: cityConfig.saturation,
-          queue: cityConfig.queue,
+          queue: cityConfig.primaryQueue,
           altQueue: cityConfig.altQueue,
-          distKm: coupon.distKm || parseFloat(cityConfig.distance) || 2.5
+          distKm: coupon.distKm || parseFloat(cityConfig.distance) || 3.0
         }
       };
     }
@@ -279,10 +374,10 @@ function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
       discount: 20,
       alt: cityConfig.alternate,
       distKm: parseFloat(cityConfig.distance) || 3.4,
-      perk: "20% Entry Discount + Priority Transit Pass",
-      businessName: "Heritage Audio & Transit Pass",
+      perk: cityConfig.perk,
+      businessName: "Heritage Audio & Priority Pass",
       saturation: cityConfig.saturation,
-      queue: cityConfig.queue,
+      queue: cityConfig.primaryQueue,
       altQueue: cityConfig.altQueue
     }
   };
@@ -659,7 +754,7 @@ function DayAccordion({ dayData, globalMonuments, isOpen, onToggle, onRedAlert }
 function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity, selectedCity: propCity }) {
   if (!isOpen) return null;
   const activeCity = propCity || currentCity || 'Delhi';
-  const cityData = CITY_REROUTE_CONFIG[activeCity] || CITY_REROUTE_CONFIG["Delhi"];
+  const cityData = getCityCrowdData(activeCity);
 
   const targetNameMatchesCity = target?.monumentName && target.monumentName.toLowerCase().includes(activeCity.toLowerCase());
 
@@ -671,9 +766,8 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity,
     ? target.couponInfo.alt
     : cityData.alternate;
 
-  const distanceText = (target?.couponInfo?.distKm && targetNameMatchesCity)
-    ? `${target.couponInfo.distKm} km from ${primaryTitle}`
-    : cityData.distance;
+  const rawDist = target?.couponInfo?.distKm ? `${target.couponInfo.distKm} km` : cityData.distance;
+  const distanceText = rawDist.includes("from") ? rawDist : `${rawDist} from ${primaryTitle}`;
 
   const saturationText = (target?.couponInfo?.saturation && targetNameMatchesCity)
     ? target.couponInfo.saturation
@@ -681,19 +775,23 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity,
 
   const queueText = (target?.couponInfo?.queue && targetNameMatchesCity)
     ? target.couponInfo.queue
-    : cityData.queue;
+    : cityData.primaryQueue;
 
   const altQueueText = (target?.couponInfo?.altQueue && targetNameMatchesCity)
     ? target.couponInfo.altQueue
     : cityData.altQueue;
 
+  const perkText = (target?.couponInfo?.perk && targetNameMatchesCity)
+    ? target.couponInfo.perk
+    : cityData.perk;
+
   const primaryImg = (target?.monumentName && targetNameMatchesCity)
-    ? (PLACE_IMAGES[target.monumentName] || cityData.image)
-    : cityData.image;
+    ? (PLACE_IMAGES[target.monumentName] || cityData.primaryImg)
+    : cityData.primaryImg;
 
   const altImg = (target?.couponInfo?.alt && targetNameMatchesCity)
-    ? (PLACE_IMAGES[target.couponInfo.alt] || cityData.altImage)
-    : cityData.altImage;
+    ? (PLACE_IMAGES[target.couponInfo.alt] || cityData.altImg)
+    : cityData.altImg;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
