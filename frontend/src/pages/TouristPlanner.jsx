@@ -164,15 +164,72 @@ function buildFallbackItinerary(destination, budget, days, interests) {
   };
 }
 
-// ─── Coupon catalogue ─────────────────────────────────────────────────────────
+// ─── Coupon Catalogue & City Reroute Definitions ─────────────────────────────
 
 const COUPON_MAP = {
+  // Jaipur
   'Amber Fort':          { code: 'JAIGARH20',       discount: 20, alt: 'Jaigarh Fort',        distKm: 1.2,  perk: '20% Entry Discount + Partner Hospitality Perk', businessName: 'Rajputana Heritage Café' },
+  'Hawa Mahal':          { code: 'JAIGARH20',       discount: 20, alt: 'Jaigarh Fort',        distKm: 3.5,  perk: '20% Entry Discount + Partner Hospitality Perk', businessName: 'Rajputana Heritage Café' },
+  'City Palace Jaipur':  { code: 'JAIGARH20',       discount: 20, alt: 'Nahargarh Fort',      distKm: 4.1,  perk: '20% Entry Discount + Free Heritage Tea',        businessName: 'Nahargarh Palace Café' },
+
+  // Agra
   'Taj Mahal':           { code: 'MEHTAB25',         discount: 25, alt: 'Mehtab Bagh',         distKm: 3.5,  perk: '25% Entry Discount + River View Photography Pass', businessName: 'Yamuna Riverside Tours' },
+  'Agra Fort':           { code: 'MEHTAB25',         discount: 25, alt: 'Mehtab Bagh',         distKm: 4.2,  perk: '25% Entry Discount + Sunset View Pass',         businessName: 'Mughal Heritage Walks' },
+
+  // Varanasi
   'Dashashwamedh Ghat':  { code: 'ASSIGHAT15',       discount: 15, alt: 'Assi Ghat',           distKm: 2.1,  perk: '15% Boat Tour Discount + Complimentary Refreshment', businessName: 'Kashi Boat Services' },
+  'Kashi Vishwanath':    { code: 'ASSIGHAT15',       discount: 15, alt: 'Assi Ghat',           distKm: 2.5,  perk: '15% Entry Discount + Temple Pass',             businessName: 'Kashi Spiritual Tours' },
+
+  // Goa
   'Baga Beach':          { code: 'MORJIMPERK',        discount: 10, alt: 'Morjim Beach',        distKm: 14.0, perk: 'Complimentary Welcome Drink at Morjim Partner Shack', businessName: 'Morjim Shack & Bar' },
+  'Calangute Beach':     { code: 'MORJIMPERK',        discount: 10, alt: 'Morjim Beach',        distKm: 12.5, perk: 'Complimentary Welcome Drink at Morjim Shack', businessName: 'Morjim Shack & Bar' },
+
+  // Delhi
   'India Gate':          { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 4.8,  perk: '20% Entry Discount + Audio Guide Included', businessName: 'Delhi Heritage Audio Guides' },
+  'Red Fort':            { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 4.8,  perk: '20% Entry Discount + Audio Guide Included', businessName: 'Delhi Heritage Audio Guides' },
+  'Qutub Minar':         { code: 'HERITAGEDELHI',     discount: 20, alt: "Humayun's Tomb",     distKm: 8.5,  perk: '20% Entry Discount + Museum Pass',         businessName: 'Delhi Heritage Audio Guides' },
 };
+
+const CITY_REROUTE_DEFAULTS = {
+  Delhi: {
+    monumentName: 'Red Fort',
+    couponInfo: { code: 'HERITAGEDELHI', discount: 20, alt: "Humayun's Tomb", distKm: 4.8, perk: '20% Entry Discount + Audio Guide Included', businessName: 'Delhi Heritage Audio Guides' }
+  },
+  Jaipur: {
+    monumentName: 'Amber Fort',
+    couponInfo: { code: 'JAIGARH20', discount: 20, alt: 'Jaigarh Fort', distKm: 1.2, perk: '20% Entry Discount + Partner Hospitality Perk', businessName: 'Rajputana Heritage Café' }
+  },
+  Agra: {
+    monumentName: 'Taj Mahal',
+    couponInfo: { code: 'MEHTAB25', discount: 25, alt: 'Mehtab Bagh', distKm: 3.5, perk: '25% Entry Discount + River View Photography Pass', businessName: 'Yamuna Riverside Tours' }
+  },
+  Varanasi: {
+    monumentName: 'Dashashwamedh Ghat',
+    couponInfo: { code: 'ASSIGHAT15', discount: 15, alt: 'Assi Ghat', distKm: 2.1, perk: '15% Boat Tour Discount + Complimentary Refreshment', businessName: 'Kashi Boat Services' }
+  },
+  Goa: {
+    monumentName: 'Baga Beach',
+    couponInfo: { code: 'MORJIMPERK', discount: 10, alt: 'Morjim Beach', distKm: 14.0, perk: 'Complimentary Welcome Drink at Morjim Partner Shack', businessName: 'Morjim Shack & Bar' }
+  }
+};
+
+function getCouponForMonument(monumentName, currentCity = 'Jaipur') {
+  if (monumentName && COUPON_MAP[monumentName]) {
+    return { monumentName, couponInfo: COUPON_MAP[monumentName] };
+  }
+
+  if (monumentName) {
+    const matchedKey = Object.keys(COUPON_MAP).find(key =>
+      monumentName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(monumentName.toLowerCase())
+    );
+    if (matchedKey) {
+      return { monumentName: matchedKey, couponInfo: COUPON_MAP[matchedKey] };
+    }
+  }
+
+  const fallback = CITY_REROUTE_DEFAULTS[currentCity] || CITY_REROUTE_DEFAULTS['Jaipur'];
+  return { monumentName: fallback.monumentName, couponInfo: fallback.couponInfo };
+}
 
 // ─── City Destination Hub Component (Rich Initial State) ──────────────────────
 
@@ -546,6 +603,9 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
   if (!isOpen || !target) return null;
   const { monumentName, couponInfo } = target;
 
+  const primaryImg = PLACE_IMAGES[monumentName] || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&q=80';
+  const altImg = PLACE_IMAGES[couponInfo.alt] || 'https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=500&q=80';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={onClose} />
@@ -564,7 +624,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
         <div className="p-6 space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-1">
             <div className="font-bold text-red-800 text-sm">
-              Notice: Amber Fort has reached 92% capacity limit.
+              Notice: {monumentName} has reached 92% capacity limit.
             </div>
             <p className="text-xs text-slate-700 leading-relaxed">
               Load-balancing incentives are active. Diversion is advised to avoid security delays and long queues.
@@ -576,7 +636,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
             <div className="bg-slate-100 rounded-xl overflow-hidden border border-red-200 space-y-1 p-2">
               <div className="relative h-24 w-full rounded-lg overflow-hidden bg-slate-900">
                 <img
-                  src="https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&q=80"
+                  src={primaryImg}
                   alt={monumentName}
                   className="w-full h-full object-cover opacity-80"
                   loading="lazy"
@@ -593,7 +653,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading }) {
             <div className="bg-emerald-50 rounded-xl overflow-hidden border border-emerald-300 space-y-1 p-2">
               <div className="relative h-24 w-full rounded-lg overflow-hidden bg-slate-900">
                 <img
-                  src="https://images.unsplash.com/photo-1609137144822-472a1e64177d?auto=format&fit=crop&w=500&q=80"
+                  src={altImg}
                   alt={couponInfo.alt}
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -878,26 +938,25 @@ export default function TouristPlanner() {
     if (!activeAlert) return;
 
     const name = activeAlert.crowdedSpot?.name;
-    if (!name || alertedMonuments.current.has(name)) return;
+    if (alertedMonuments.current.has(name)) return;
 
-    const couponInfo = COUPON_MAP[name];
-    if (couponInfo) {
-      alertedMonuments.current.add(name);
-      setAlertBanner({ name, loadPercent: activeAlert.crowdedSpot?.loadPercent || 92, couponInfo });
-      setRerouteTarget({ monumentName: name, couponInfo });
-      setShowReroute(true);
-    }
-  }, [activeAlert]);
+    const { monumentName: resolvedName, couponInfo } = getCouponForMonument(name, destination);
+    if (name) alertedMonuments.current.add(name);
+    alertedMonuments.current.add(resolvedName);
+    setAlertBanner({ name: resolvedName, loadPercent: activeAlert.crowdedSpot?.loadPercent || 92, couponInfo });
+    setRerouteTarget({ monumentName: resolvedName, couponInfo });
+    setShowReroute(true);
+  }, [activeAlert, destination]);
 
   const handleRedAlert = useCallback((monumentName) => {
     if (alertedMonuments.current.has(monumentName)) return;
-    const couponInfo = COUPON_MAP[monumentName];
-    if (!couponInfo) return;
-    alertedMonuments.current.add(monumentName);
-    setAlertBanner({ name: monumentName, loadPercent: 92, couponInfo });
-    setRerouteTarget({ monumentName, couponInfo });
+    const { monumentName: resolvedName, couponInfo } = getCouponForMonument(monumentName, destination);
+    if (monumentName) alertedMonuments.current.add(monumentName);
+    alertedMonuments.current.add(resolvedName);
+    setAlertBanner({ name: resolvedName, loadPercent: 92, couponInfo });
+    setRerouteTarget({ monumentName: resolvedName, couponInfo });
     setShowReroute(true);
-  }, []);
+  }, [destination]);
 
   const generateItinerary = async (overrideDays, overrideBudget, overrideInterests) => {
     setGenerating(true);
