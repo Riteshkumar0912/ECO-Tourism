@@ -661,14 +661,39 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity,
   const activeCity = propCity || currentCity || 'Delhi';
   const cityData = CITY_REROUTE_CONFIG[activeCity] || CITY_REROUTE_CONFIG["Delhi"];
 
-  const primaryTitle = target?.monumentName || cityData.primary;
-  const alternateTitle = target?.couponInfo?.alt || cityData.alternate;
-  const distanceText = target?.couponInfo?.distKm ? `${target.couponInfo.distKm} km from ${primaryTitle}` : cityData.distance;
-  const saturationText = target?.couponInfo?.saturation || cityData.saturation;
-  const queueText = target?.couponInfo?.queue || cityData.queue;
-  const altQueueText = target?.couponInfo?.altQueue || cityData.altQueue;
-  const primaryImg = target?.monumentName ? (PLACE_IMAGES[target.monumentName] || cityData.image) : cityData.image;
-  const altImg = target?.couponInfo?.alt ? (PLACE_IMAGES[target.couponInfo.alt] || cityData.altImage) : cityData.altImage;
+  const targetNameMatchesCity = target?.monumentName && target.monumentName.toLowerCase().includes(activeCity.toLowerCase());
+
+  const primaryTitle = (target?.monumentName && targetNameMatchesCity)
+    ? target.monumentName
+    : cityData.primary;
+
+  const alternateTitle = (target?.couponInfo?.alt && targetNameMatchesCity)
+    ? target.couponInfo.alt
+    : cityData.alternate;
+
+  const distanceText = (target?.couponInfo?.distKm && targetNameMatchesCity)
+    ? `${target.couponInfo.distKm} km from ${primaryTitle}`
+    : cityData.distance;
+
+  const saturationText = (target?.couponInfo?.saturation && targetNameMatchesCity)
+    ? target.couponInfo.saturation
+    : cityData.saturation;
+
+  const queueText = (target?.couponInfo?.queue && targetNameMatchesCity)
+    ? target.couponInfo.queue
+    : cityData.queue;
+
+  const altQueueText = (target?.couponInfo?.altQueue && targetNameMatchesCity)
+    ? target.couponInfo.altQueue
+    : cityData.altQueue;
+
+  const primaryImg = (target?.monumentName && targetNameMatchesCity)
+    ? (PLACE_IMAGES[target.monumentName] || cityData.image)
+    : cityData.image;
+
+  const altImg = (target?.couponInfo?.alt && targetNameMatchesCity)
+    ? (PLACE_IMAGES[target.couponInfo.alt] || cityData.altImage)
+    : cityData.altImage;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
