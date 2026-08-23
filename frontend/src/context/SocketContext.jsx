@@ -36,9 +36,14 @@ export function SocketProvider({ children }) {
         : `${BACKEND_URL}/api/monuments`;
       const res  = await fetch(url);
       const json = await res.json();
-      if (json.success) setMonuments(json.data);
+      if (json.success && Array.isArray(json.data)) {
+        setMonuments(json.data);
+      } else {
+        setMonuments([]);
+      }
     } catch (err) {
       console.warn('[SocketContext] Failed to fetch monuments:', err.message);
+      setMonuments([]);
     }
   }, []);
 

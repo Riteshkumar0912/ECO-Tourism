@@ -16,9 +16,8 @@ const { fetchLiveWeather, getPlacesForCity, getHotelsForCity } = require('./serv
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://eco-tourism-three.vercel.app",
-  process.env.CLIENT_URL
-].filter(Boolean);
+  "https://eco-tourism-three.vercel.app"
+];
 
 const app = express();
 const httpServer = createServer(app);
