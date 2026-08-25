@@ -523,60 +523,7 @@ function CityDestinationHub({ selectedCity, onQuickStart, liveWeather }) {
 
 // ─── Helper components ────────────────────────────────────────────────────────
 
-function BudgetMeter({ breakdown, total, budget }) {
-  const spent = Object.values(breakdown).reduce((a, b) => a + b, 0);
-  const remaining = Math.max(budget - spent, 0);
 
-  const segments = [
-    { label: 'Accommodations', value: breakdown.accommodation, color: 'bg-emerald-700', textColor: 'text-emerald-800' },
-    { label: 'Hospitality',    value: breakdown.food,          color: 'bg-teal-600',    textColor: 'text-teal-800' },
-    { label: 'Transit Corridor', value: breakdown.transport,  color: 'bg-amber-500',   textColor: 'text-amber-800' },
-    { label: 'Monument Entry', value: breakdown.activities,   color: 'bg-slate-700',   textColor: 'text-slate-800' },
-  ].filter(s => s.value > 0);
-
-  return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2 uppercase tracking-wider">
-          <TrendingUp size={15} className="text-emerald-700" />
-          Estimated Expenditure & Carbon Impact Breakdown
-        </h3>
-        <div className="text-right">
-          <span className="text-[11px] text-slate-500 font-semibold">Estimated Allocation</span>
-          <div className="text-xs font-bold text-slate-900 font-mono">₹{spent.toLocaleString('en-IN')} / ₹{budget.toLocaleString('en-IN')}</div>
-        </div>
-      </div>
-
-      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden flex border border-slate-200">
-        {segments.map((seg, i) => (
-          <div
-            key={i}
-            className={`h-full ${seg.color} transition-all duration-700`}
-            style={{ width: `${(seg.value / budget) * 100}%` }}
-          />
-        ))}
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {segments.map((seg, i) => (
-          <div key={i} className="text-center bg-slate-50 rounded-lg p-2 border border-slate-200">
-            <div className={`text-xs font-bold font-mono ${seg.textColor}`}>₹{seg.value.toLocaleString('en-IN')}</div>
-            <div className="text-[10px] text-slate-500 font-semibold">{seg.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between text-xs border-t border-slate-100 pt-3 font-semibold">
-        <span className="text-slate-600 flex items-center gap-1.5">
-          <Leaf size={14} className="text-emerald-700" /> Sustainable Impact: 14.2 kg CO₂ Saved via Reroute
-        </span>
-        <span className={remaining > 0 ? 'text-emerald-800 font-bold font-mono' : 'text-red-700 font-bold font-mono'}>
-          Unallocated Cushion: ₹{remaining.toLocaleString('en-IN')}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function CrowdStatusBadge({ placeName, globalMonuments, fallbackStatus = 'GREEN' }) {
   const live = globalMonuments?.find(m =>
@@ -1440,14 +1387,7 @@ export default function TouristPlanner() {
               </div>
             )}
 
-            {/* Budget Overview card */}
-            {itinerary?.budgetBreakdown && (
-              <BudgetMeter
-                breakdown={itinerary.budgetBreakdown}
-                total={itinerary.totalEstimatedCost}
-                budget={budget}
-              />
-            )}
+
           </div>
 
           {/* ── RIGHT: Itinerary Display / Rich City Destination Hub ──────── */}
