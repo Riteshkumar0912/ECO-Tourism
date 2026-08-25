@@ -18,6 +18,81 @@ import { CITY_COORDINATES, ALL_MONUMENT_COORDS } from '../data/cityData';
 const CITY_CENTRES = CITY_COORDINATES;
 const MONUMENT_COORDS = ALL_MONUMENT_COORDS;
 
+const CROWD_POINTS = [
+  {
+    id: "INC-901",
+    name: "Amber Fort",
+    lat: 26.9855,
+    lng: 75.8513,
+    rushLevel: "HIGH",
+    percentage: 92,
+    status: "ACTIVE",
+    action: "Reroute Broadcast Dispatched → Jaigarh Fort"
+  },
+  {
+    id: "INC-902",
+    name: "Taj Mahal",
+    lat: 27.1751,
+    lng: 78.0421,
+    rushLevel: "MODERATE",
+    percentage: 68,
+    status: "RESOLVED",
+    action: "Incentive Pass Activated → Mehtab Bagh"
+  },
+  {
+    id: "INC-903",
+    name: "Dashashwamedh Ghat",
+    lat: 25.3076,
+    lng: 83.0104,
+    rushLevel: "HIGH",
+    percentage: 88,
+    status: "RESOLVED",
+    action: "Boat Corridor Diverted → Assi Ghat"
+  },
+  {
+    id: "INC-904",
+    name: "India Gate",
+    lat: 28.6129,
+    lng: 77.2295,
+    rushLevel: "HIGH",
+    percentage: 90,
+    status: "RESOLVED",
+    action: "Shuttle Diverted → Humayun Tomb"
+  }
+];
+
+const getMarkerColor = (pct) => (pct >= 80 ? '#ef4444' : pct >= 50 ? '#eab308' : '#22c55e');
+
+const createCrowdIcon = (point) => {
+  const color = getMarkerColor(point.percentage);
+  return L.divIcon({
+    className: 'custom-crowd-pin',
+    html: `
+      <div style="background-color: ${color}; color: white; padding: 4px 8px; border-radius: 9999px; font-weight: bold; font-size: 11px; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); border: 2px solid white; white-space: nowrap;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: white; display: inline-block;"></span>
+        <span>${point.name}: ${point.percentage}%</span>
+      </div>
+    `,
+    iconSize: [120, 30],
+    iconAnchor: [60, 15]
+  });
+};
+
+function MapBoundsFitter({ points }) {
+  const map = useMap();
+  useEffect(() => {
+    if (map && points && points.length > 0) {
+      try {
+        const bounds = points.map(p => [p.lat, p.lng]);
+        map.fitBounds(bounds, { padding: [40, 40] });
+      } catch (err) {
+        console.warn("map.fitBounds error prevented:", err);
+      }
+    }
+  }, [map, points]);
+  return null;
+}
+
 function makeMarkerIcon(status, load) {
   const colors = { GREEN: '#047857', YELLOW: '#d97706', RED: '#b91c1c' };
   const color  = colors[status] || '#047857';
@@ -221,38 +296,44 @@ export default function AuthorityDashboard() {
                 <MapPin size={14} className="text-emerald-700" /> City Crowd Map — {selectedCity}
               </div>
               <div className="flex gap-2 text-[10px] font-bold">
-                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">Green: Normal</span>
-                <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded">Amber: Moderate</span>
-                <span className="bg-red-50 text-red-800 border border-red-200 px-2 py-0.5 rounded">Red: Busy</span>
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">Green: &lt;50% Normal</span>
+                <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded">Yellow: 50-79% Moderate</span>
+                <span className="bg-red-50 text-red-800 border border-red-200 px-2 py-0.5 rounded">Red: &ge;80% High</span>
               </div>
             </div>
 
             <div className="h-[420px] relative">
               <MapContainer center={mapCenter} zoom={12} style={{ height: '100%', width: '100%' }}>
                 <MapRecenterer center={mapCenter} zoom={12} />
+                <MapBoundsFitter points={CROWD_POINTS} />
                 <TileLayer
                   url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                   attribution='&copy; <a href="https://carto.com/">CARTO</a>'
                 />
-                {displayMonuments.map((m) => {
-                  const coords = MONUMENT_COORDS[m.name] || mapCenter;
-                  const pct = m.maxCapacity > 0 ? Math.round((m.currentCount / m.maxCapacity) * 100) : 35;
-                  const stat = pct >= 85 ? 'RED' : pct >= 60 ? 'YELLOW' : 'GREEN';
-
-                  return (
-                    <Marker key={m._id || m.name} position={coords} icon={makeMarkerIcon(stat, pct)}>
-                      <Popup>
-                        <div className="p-1 space-y-1 font-sans text-xs">
-                          <div className="font-bold text-slate-900">{m.name}</div>
-                          <div className="text-[11px] text-slate-500 font-mono">{m.city} · {pct}% Capacity</div>
-                          <div className="text-[10px] font-bold text-emerald-800">
-                            {m.alternativeSpot?.name ? `Alt: ${m.alternativeSpot.name}` : 'Normal'}
-                          </div>
+                {CROWD_POINTS.map((point) => (
+                  <Marker
+                    key={point.id}
+                    position={[point.lat, point.lng]}
+                    icon={createCrowdIcon(point)}
+                  >
+                    <Popup>
+                      <div className="p-1 space-y-1 font-sans text-xs">
+                        <div className="font-bold text-slate-900 flex items-center justify-between gap-2">
+                          <span>{point.name}</span>
+                          <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-bold ${point.status === 'ACTIVE' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                            {point.status}
+                          </span>
                         </div>
-                      </Popup>
-                    </Marker>
-                  );
-                })}
+                        <div className="text-[11px] text-slate-600 font-mono">
+                          Rush Level: <span className="font-bold">{point.rushLevel} ({point.percentage}%)</span>
+                        </div>
+                        <div className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-1 rounded">
+                          {point.action}
+                        </div>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
               </MapContainer>
             </div>
           </div>
