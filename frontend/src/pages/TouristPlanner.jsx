@@ -1060,6 +1060,7 @@ export default function TouristPlanner() {
   const [showVoucher,   setShowVoucher] = useState(false);
 
   const [alertBanner,  setAlertBanner]  = useState(null);
+  const [isFlashing,   setIsFlashing]   = useState(false);
   const alertedMonuments = useRef(new Set());
 
   useEffect(() => {
@@ -1109,6 +1110,9 @@ export default function TouristPlanner() {
   }, [destination]);
 
   const generateItinerary = async (overrideDays, overrideBudget, overrideInterests) => {
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 200);
+
     setGenerating(true);
     setGenError(null);
     setItinerary(null);
@@ -1220,7 +1224,10 @@ export default function TouristPlanner() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-16 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
+      {isFlashing && (
+        <div className="fixed inset-0 bg-white/70 backdrop-blur-[2px] z-[9999] pointer-events-none transition-opacity duration-200" />
+      )}
 
       {/* ── Top Alert Banner (Exact Specification) ────────────────────── */}
       {alertBanner && (

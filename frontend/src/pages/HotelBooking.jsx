@@ -160,6 +160,12 @@ export default function HotelBooking() {
 
   const [myBookings, setMyBookings] = useState(INITIAL_BOOKINGS);
   const [passModalBooking, setPassModalBooking] = useState(null);
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  const handleUpdateSearch = async () => {
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 200);
+  };
 
   // Fetch Live Hotels from Backend API
 const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.onrender.com').replace(/\/$/, '');
@@ -263,6 +269,9 @@ const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
+      {isFlashing && (
+        <div className="fixed inset-0 bg-white/70 backdrop-blur-[2px] z-[9999] pointer-events-none transition-opacity duration-200" />
+      )}
       <div className="max-w-7xl mx-auto px-4 pt-6 space-y-6">
 
         {/* ── Header & Navigation Tabs ─────────────────────────────────── */}
@@ -368,7 +377,7 @@ const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.
 
                 <div className="flex items-end">
                   <button
-                    onClick={() => {}}
+                    onClick={handleUpdateSearch}
                     className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg shadow-xs transition-all flex items-center justify-center gap-2"
                   >
                     <Search size={14} /> Update Search
