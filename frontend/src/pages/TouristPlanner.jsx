@@ -112,6 +112,57 @@ function buildFallbackItinerary(destination, budget, days, interests) {
   };
 }
 
+// ─── Itinerary Deduplication & Smart Replacement Helper ─────────────────────
+
+function deduplicateDayStops(places, currentCity = 'Jaipur') {
+  if (!Array.isArray(places)) return places;
+
+  const fallbackAttractions = {
+    jaipur: ['Nahargarh Fort', 'Panna Meena Ka Kund', 'Jal Mahal', 'Albert Hall Museum'],
+    agra: ['Mehtab Bagh', 'Itimad-ud-Daulah', 'Akbar Tomb Sikandra', 'Jama Masjid Agra'],
+    varanasi: ['Assi Ghat', 'Sarnath', 'Tulsi Manas Temple', 'Ramnagar Fort'],
+    goa: ['Morjim Beach', 'Fontainhas Heritage Quarter', 'Reis Magos Fort', 'Dudhsagar Waterfalls'],
+    delhi: ["Humayun's Tomb", 'Safdarjung Tomb', 'Lotus Temple', 'Lodhi Garden'],
+  };
+
+  const cityKey = (currentCity || 'jaipur').toLowerCase();
+  const pool = fallbackAttractions[cityKey] || fallbackAttractions['jaipur'];
+
+  const seenNames = new Set();
+  const result = [];
+
+  for (const place of places) {
+    const rawName = place.placeName || place.name || '';
+    const key = rawName.toLowerCase().trim();
+
+    if (!key) {
+      result.push(place);
+      continue;
+    }
+
+    if (seenNames.has(key)) {
+      // Find unused fallback attraction
+      const fallback = pool.find(item => !seenNames.has(item.toLowerCase()));
+      if (fallback) {
+        seenNames.add(fallback.toLowerCase());
+        result.push({
+          ...place,
+          placeName: fallback,
+          crowdStatus: 'GREEN',
+          isAlternative: true,
+          practicalTip: `Replaced duplicate stop with nearby low-density attraction: ${fallback}.`
+        });
+      }
+      // If pool exhausted, skip duplicate entry
+    } else {
+      seenNames.add(key);
+      result.push(place);
+    }
+  }
+
+  return result;
+}
+
 // ─── Coupon Catalogue & City Reroute Definitions ─────────────────────────────
 
 const COUPON_MAP = {
@@ -1160,9 +1211,8 @@ export default function TouristPlanner() {
 
     setItinerary(prev => {
       if (!prev) return prev;
-      const newSchedule = prev.schedule.map(day => ({
-        ...day,
-        places: day.places.map(place => {
+      const newSchedule = prev.schedule.map(day => {
+        const updatedPlaces = day.places.map(place => {
           const matches =
             place.placeName?.toLowerCase().includes(monumentName.toLowerCase()) ||
             monumentName.toLowerCase().includes(place.placeName?.toLowerCase().split(' ')[0]);
@@ -1177,8 +1227,14 @@ export default function TouristPlanner() {
             };
           }
           return place;
-        })
-      }));
+        });
+
+        const deduplicated = deduplicateDayStops(updatedPlaces, destination);
+        return {
+          ...day,
+          places: deduplicated
+        };
+      });
       return { ...prev, schedule: newSchedule, isRerouted: true };
     });
 
