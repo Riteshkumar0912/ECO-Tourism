@@ -588,18 +588,30 @@ function CrowdStatusBadge({ placeName, globalMonuments, fallbackStatus = 'GREEN'
   );
 }
 
-function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
-  const live = globalMonuments?.find(m =>
-    m.name?.toLowerCase().includes(place.placeName?.toLowerCase()) ||
-    place.placeName?.toLowerCase().includes(m.name?.toLowerCase().split(' ')[0])
-  );
-  const liveStatus = live?.status || place.crowdStatus || 'GREEN';
+function PlaceCard({ index = 0, place, globalMonuments, onRedAlert }) {
+  if (!place) return null;
+
+  const placeName = place.placeName || place.name || place.title || `Stop #${index + 1}`;
+  const category = place.category || 'Heritage';
+  const timeSlot = place.timeSlot || place.time || 'Flexible Hours';
+  const cost = typeof place.estimatedCost === 'number' ? place.estimatedCost : (typeof place.cost === 'number' ? place.cost : 0);
+  const practicalTip = place.practicalTip || place.tip || place.description;
+  const fallbackStatus = place.crowdStatus || 'GREEN';
+
+  const live = Array.isArray(globalMonuments) ? globalMonuments.find(m => {
+    if (!m || !m.name) return false;
+    const mName = m.name.toLowerCase();
+    const pName = placeName.toLowerCase();
+    return mName.includes(pName) || pName.includes(mName.split(' ')[0]);
+  }) : null;
+
+  const liveStatus = live?.status || fallbackStatus;
 
   useEffect(() => {
-    if (liveStatus === 'RED' && !place.isAlternative && COUPON_MAP[place.placeName]) {
-      onRedAlert?.(place.placeName, liveStatus);
+    if (liveStatus === 'RED' && !place.isAlternative && COUPON_MAP[placeName]) {
+      onRedAlert?.(placeName, liveStatus);
     }
-  }, [liveStatus]);
+  }, [liveStatus, placeName]);
 
   return (
     <div className={`p-5 space-y-3 rounded-xl border transition-all ${place.isAlternative ? 'border-emerald-300 bg-emerald-50/40' : 'border-slate-200 bg-white shadow-xs'} relative overflow-hidden`}>
@@ -611,8 +623,8 @@ function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
       {/* 16:9 Thumbnail Image Preview */}
       <div className="relative overflow-hidden rounded-xl bg-slate-100 h-44 w-full">
         <img
-          src={PLACE_IMAGES[place.placeName] || place.image || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=700&q=80'}
-          alt={place.placeName}
+          src={PLACE_IMAGES[placeName] || place.image || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=700&q=80'}
+          alt={placeName}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           onError={(e) => {
@@ -623,20 +635,20 @@ function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
 
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 font-mono">
             {index + 1}
           </div>
           <div className="min-w-0">
-            <div className="font-bold text-slate-900 text-sm leading-tight">{place.placeName}</div>
+            <div className="font-bold text-slate-900 text-sm leading-tight">{placeName}</div>
             <div className="flex flex-wrap items-center gap-2 mt-1.5">
-              <span className="text-[10px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md font-semibold border border-slate-200">{place.category}</span>
-              <CrowdStatusBadge placeName={place.placeName} globalMonuments={globalMonuments} fallbackStatus={place.crowdStatus} />
+              <span className="text-[10px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md font-semibold border border-slate-200">{category}</span>
+              <CrowdStatusBadge placeName={placeName} globalMonuments={globalMonuments} fallbackStatus={fallbackStatus} />
             </div>
           </div>
         </div>
         <div className="text-right shrink-0">
           <div className="text-sm font-bold text-slate-900 font-mono">
-            {place.estimatedCost > 0 ? `₹${place.estimatedCost.toLocaleString('en-IN')}` : 'Complimentary'}
+            {cost > 0 ? `₹${cost.toLocaleString('en-IN')}` : 'Complimentary'}
           </div>
           <div className="text-[10px] text-slate-500 font-semibold">entry fee</div>
         </div>
@@ -644,13 +656,13 @@ function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
 
       <div className="flex items-center gap-1.5 text-xs text-slate-600 font-semibold">
         <Clock size={13} className="text-emerald-700 shrink-0" />
-        {place.timeSlot}
+        {timeSlot}
       </div>
 
-      {place.practicalTip && (
+      {practicalTip && (
         <div className="flex items-start gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
           <Info size={13} className="text-emerald-700 shrink-0 mt-0.5" />
-          <p className="text-xs text-slate-600 leading-relaxed font-medium">{place.practicalTip}</p>
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">{practicalTip}</p>
         </div>
       )}
 
@@ -658,10 +670,11 @@ function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
           <div className="flex items-center gap-2">
             <AlertTriangle size={15} className="text-red-700 shrink-0" />
-            <span className="text-xs text-red-800 font-bold">{place.placeName} — High Density Capacity Breach (92%)</span>
+            <span className="text-xs text-red-800 font-bold">{placeName} — High Density Capacity Breach (92%)</span>
           </div>
           <button
-            onClick={() => onRedAlert?.(place.placeName, liveStatus)}
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRedAlert?.(placeName, liveStatus); }}
             className="px-3 py-1.5 bg-red-700 hover:bg-red-800 text-white rounded-lg text-xs font-bold transition-colors shrink-0 shadow-xs"
           >
             Accept Reroute & Claim Perks
@@ -673,22 +686,41 @@ function PlaceCard({ index, place, globalMonuments, onRedAlert }) {
 }
 
 function DayAccordion({ dayData, globalMonuments, isOpen, onToggle, onRedAlert }) {
-  const totalCost = dayData.places.reduce((s, p) => s + p.estimatedCost, 0);
+  if (!dayData) return null;
+
+  const places = Array.isArray(dayData.places)
+    ? dayData.places
+    : Array.isArray(dayData.stops)
+    ? dayData.stops
+    : Array.isArray(dayData.activities)
+    ? dayData.activities
+    : Array.isArray(dayData.items)
+    ? dayData.items
+    : [];
+
+  const totalCost = places.reduce((s, p) => s + (p?.estimatedCost || p?.cost || 0), 0);
+  const dayNum = dayData.day || dayData.dayNumber || 1;
+  const dayTheme = dayData.theme || dayData.title || dayData.description || 'Heritage & Cultural Highlights';
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
       <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 hover:bg-slate-100/70 transition-colors text-left"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggle?.();
+        }}
+        className="w-full flex items-center justify-between px-5 py-4 bg-slate-50 hover:bg-slate-100/70 transition-colors text-left focus:outline-none"
       >
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-emerald-700 text-white font-black text-xs flex items-center justify-center font-mono">
-            D{dayData.day}
+            D{dayNum}
           </div>
           <div>
-            <div className="font-bold text-slate-900 text-sm">Day {dayData.day}: {dayData.theme}</div>
+            <div className="font-bold text-slate-900 text-sm">Day {dayNum}: {dayTheme}</div>
             <div className="text-xs text-slate-500 mt-0.5 font-medium">
-              {dayData.places.length} stops · Est. Entry Allocation: ₹{totalCost.toLocaleString('en-IN')}
+              {places.length} stops · Est. Entry Allocation: ₹{totalCost.toLocaleString('en-IN')}
             </div>
           </div>
         </div>
@@ -697,15 +729,21 @@ function DayAccordion({ dayData, globalMonuments, isOpen, onToggle, onRedAlert }
 
       {isOpen && (
         <div className="p-4 space-y-3 bg-white border-t border-slate-200">
-          {dayData.places.map((place, idx) => (
-            <PlaceCard
-              key={idx}
-              index={idx}
-              place={place}
-              globalMonuments={globalMonuments}
-              onRedAlert={onRedAlert}
-            />
-          ))}
+          {places.length > 0 ? (
+            places.map((place, idx) => (
+              <PlaceCard
+                key={idx}
+                index={idx}
+                place={place}
+                globalMonuments={globalMonuments}
+                onRedAlert={onRedAlert}
+              />
+            ))
+          ) : (
+            <div className="text-xs text-slate-500 italic p-3 text-center bg-slate-50 rounded-lg border border-slate-200 font-medium">
+              No specific attraction stops scheduled for Day {dayNum}.
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1441,16 +1479,19 @@ export default function TouristPlanner() {
 
                 {/* Day Accordions */}
                 <div className="space-y-3">
-                  {itinerary.schedule.map((dayData) => (
-                    <DayAccordion
-                      key={dayData.day}
-                      dayData={dayData}
-                      globalMonuments={globalMonuments}
-                      isOpen={openDays.includes(dayData.day)}
-                      onToggle={() => toggleDay(dayData.day)}
-                      onRedAlert={handleRedAlert}
-                    />
-                  ))}
+                  {(itinerary?.schedule || itinerary?.days || itinerary?.itinerary || []).map((dayData, idx) => {
+                    const dayVal = dayData?.day || idx + 1;
+                    return (
+                      <DayAccordion
+                        key={dayVal}
+                        dayData={dayData}
+                        globalMonuments={globalMonuments}
+                        isOpen={Array.isArray(openDays) && openDays.includes(dayVal)}
+                        onToggle={() => toggleDay(dayVal)}
+                        onRedAlert={handleRedAlert}
+                      />
+                    );
+                  })}
                 </div>
               </>
             )}
