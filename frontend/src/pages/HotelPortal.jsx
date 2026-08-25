@@ -47,12 +47,12 @@ export default function HotelPortal() {
   const { selectedCity, isConnected } = useSocket();
 
   const [formData, setFormData] = useState({
-    businessName: 'Rajputana Heritage Café & Dining',
+    businessName: '',
     category: 'Restaurant',
-    couponCode: 'RAJPUTANA20',
-    discountPercent: 20,
-    perk: '20% Off Heritage Dining + Complimentary Tea',
-    monumentName: 'Amber Fort',
+    couponCode: '',
+    discountPercent: '',
+    perk: '',
+    monumentName: '',
   });
 
   const [publishing, setPublishing] = useState(false);
@@ -65,6 +65,14 @@ export default function HotelPortal() {
     setTimeout(() => {
       setPublishing(false);
       setPubSuccess(true);
+      setFormData({
+        businessName: '',
+        category: 'Restaurant',
+        couponCode: '',
+        discountPercent: '',
+        perk: '',
+        monumentName: '',
+      });
       setTimeout(() => setPubSuccess(false), 3500);
     }, 400);
   };
@@ -211,8 +219,9 @@ export default function HotelPortal() {
                   type="text"
                   value={formData.businessName}
                   onChange={e => setFormData({ ...formData, businessName: e.target.value })}
+                  placeholder="e.g. Rajputana Heritage Café & Dining"
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none placeholder:text-slate-400 font-sans"
                 />
               </div>
 
@@ -223,8 +232,9 @@ export default function HotelPortal() {
                     type="text"
                     value={formData.couponCode}
                     onChange={e => setFormData({ ...formData, couponCode: e.target.value })}
+                    placeholder="e.g. RAJPUTANA20"
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal"
                   />
                 </div>
 
@@ -233,9 +243,10 @@ export default function HotelPortal() {
                   <input
                     type="number"
                     value={formData.discountPercent}
-                    onChange={e => setFormData({ ...formData, discountPercent: Number(e.target.value) })}
+                    onChange={e => setFormData({ ...formData, discountPercent: e.target.value })}
+                    placeholder="e.g. 20"
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal"
                   />
                 </div>
               </div>
@@ -246,8 +257,9 @@ export default function HotelPortal() {
                   type="text"
                   value={formData.perk}
                   onChange={e => setFormData({ ...formData, perk: e.target.value })}
+                  placeholder="e.g. 20% Off Heritage Dining + Complimentary Tea"
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none placeholder:text-slate-400"
                 />
               </div>
 
@@ -257,8 +269,9 @@ export default function HotelPortal() {
                   type="text"
                   value={formData.monumentName}
                   onChange={e => setFormData({ ...formData, monumentName: e.target.value })}
+                  placeholder="e.g. Amber Fort"
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-700 focus:outline-none placeholder:text-slate-400"
                 />
               </div>
 
