@@ -48,7 +48,7 @@ const REAL_PLACES_DATA = [
     entryFee: 85,
     openingHours: '09:00 AM – 05:00 PM',
     description: 'Formidable hilltop fortress housing Jaivana, the world’s largest cannon on wheels.',
-    photo: 'https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?auto=format&fit=crop&w=800&q=80',
+    photo: 'https://i.pinimg.com/736x/89/e5/e4/89e5e4f58cac0d223bcc9fcdd25824da.jpg',
   },
   {
     name: 'Nahargarh Fort',

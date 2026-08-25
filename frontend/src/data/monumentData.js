@@ -34,7 +34,7 @@ export const VERIFIED_MONUMENTS = {
   },
   "Jaigarh Fort": {
     city: "Jaipur",
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=800&auto=format&fit=crop&q=80",
+    image: "https://i.pinimg.com/736x/89/e5/e4/89e5e4f58cac0d223bcc9fcdd25824da.jpg",
     description: "Rugged military fortress overlooking Amber"
   },
   "Hawa Mahal": {
