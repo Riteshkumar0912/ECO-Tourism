@@ -47,7 +47,6 @@ export default function AuthPage() {
     confirmPassword: '',
     fullName: '',
     mobile: '',
-    preferredCity: 'Jaipur',
   });
 
   // Authority Form State
@@ -422,18 +421,7 @@ export default function AuthPage() {
                   />
                 </div>
 
-                {activeTab === 'signup' && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700">Preferred Travel Destination</label>
-                    <select
-                      value={touristForm.preferredCity}
-                      onChange={(e) => setTouristForm({ ...touristForm, preferredCity: e.target.value })}
-                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white font-medium"
-                    >
-                      {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                )}
+
 
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
