@@ -42,7 +42,13 @@ function makeMarkerIcon(status, load) {
 function MapRecenterer({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom, { animate: true });
+    if (center && Array.isArray(center) && center.length === 2 && typeof center[0] === 'number' && typeof center[1] === 'number' && !isNaN(center[0]) && !isNaN(center[1])) {
+      try {
+        map.setView(center, zoom || 12, { animate: true });
+      } catch (err) {
+        console.warn("Leaflet map.setView error prevented:", err);
+      }
+    }
   }, [center, zoom, map]);
   return null;
 }

@@ -1256,9 +1256,13 @@ export default function TouristPlanner() {
   };
 
   const toggleDay = (day) => {
-    setOpenDays(prev =>
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, d]
-    );
+    if (day === undefined || day === null) return;
+    setOpenDays(prev => {
+      const current = Array.isArray(prev) ? prev : [1];
+      return current.includes(day)
+        ? current.filter(d => d !== day)
+        : [...current, day];
+    });
   };
 
   return (
