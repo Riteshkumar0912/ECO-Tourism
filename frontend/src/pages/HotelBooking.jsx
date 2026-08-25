@@ -108,6 +108,81 @@ const SEED_HOTELS = [
     rooms: [
       { id: 'RM-501', name: 'Ghat Sanctuary Room', price: 3500, desc: 'Serene morning yoga balcony' }
     ]
+  },
+  {
+    id: 'goa-hotel-1',
+    name: 'Taj Exotica Resort & Spa',
+    city: 'Goa',
+    location: 'Benaulim, South Goa',
+    address: 'Benaulim Beach Road, South Goa',
+    type: 'Luxury Beach Resort',
+    distance: '0.5 km from Benaulim Beach',
+    rating: 4.8,
+    reviewsCount: 284,
+    priceRange: '₹₹₹₹',
+    pricePerNight: 9500,
+    originalPrice: 11500,
+    rerouteDiscount: 15,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80',
+    ecoCertified: true,
+    ecoLevel: 'Eco Platinum Certified',
+    crowdLevel: 'Low',
+    crowdZone: 'Low Crowd Zone',
+    crowdZoneType: 'LOW',
+    ecoFeatures: ['Solar Powered', 'Zero Plastic Beach Protocol', 'Organic Farm Dining', 'EV Shuttle'],
+    rooms: [
+      { id: 'RM-GA-101', name: 'Luxury Villa Suite', price: 9500, desc: 'Private sea balcony with solar water cooling' }
+    ]
+  },
+  {
+    id: 'goa-hotel-2',
+    name: 'W Goa',
+    city: 'Goa',
+    location: 'Vagator, North Goa',
+    address: 'Vagator Beach Road, North Goa',
+    type: 'Boutique Coastal Resort',
+    distance: '0.8 km from Vagator Beach',
+    rating: 4.7,
+    reviewsCount: 196,
+    priceRange: '₹₹₹₹',
+    pricePerNight: 8200,
+    originalPrice: 10000,
+    rerouteDiscount: 20,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop&q=80',
+    ecoCertified: true,
+    ecoLevel: 'Eco Platinum Certified',
+    crowdLevel: 'Moderate',
+    crowdZone: 'Moderate Crowd Zone',
+    crowdZoneType: 'MODERATE',
+    ecoFeatures: ['Solar Heated Pools', 'Recycled Bamboo Interior', 'Sustainable Seafood'],
+    rooms: [
+      { id: 'RM-GA-201', name: 'Wonderful Ocean View Villa', price: 8200, desc: 'Panoramic Vagator cliffside sea view' }
+    ]
+  },
+  {
+    id: 'goa-hotel-3',
+    name: 'Alila Diwa Goa',
+    city: 'Goa',
+    location: 'Majorda, South Goa',
+    address: 'Majorda Beach Road, South Goa',
+    type: 'Eco-Friendly Heritage Stay',
+    distance: '1.2 km from Majorda Beach',
+    rating: 4.6,
+    reviewsCount: 142,
+    priceRange: '₹₹₹',
+    pricePerNight: 5400,
+    originalPrice: 6800,
+    rerouteDiscount: 20,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80',
+    ecoCertified: true,
+    ecoLevel: 'Eco Gold Certified',
+    crowdLevel: 'Low',
+    crowdZone: 'Low Crowd Zone',
+    crowdZoneType: 'LOW',
+    ecoFeatures: ['100% Bamboo Construction', 'Turtle Protection Lighting', 'Rainwater Harvesting'],
+    rooms: [
+      { id: 'RM-GA-301', name: 'Terrace Eco Chalet', price: 5400, desc: 'Paddy field facing sustainable wooden chalet' }
+    ]
   }
 ];
 
