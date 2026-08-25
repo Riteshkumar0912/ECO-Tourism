@@ -145,11 +145,43 @@ const SEED_INCIDENTS = [
   { id: 'INC-904', time: '15:15:22', spot: 'India Gate', level: 'HIGH (90%)', action: 'Shuttle Diverted -> Humayun Tomb', status: 'RESOLVED' },
 ];
 
+function MapFlyController({ selectedSpot }) {
+  const map = useMap();
+  useEffect(() => {
+    if (selectedSpot && map && typeof selectedSpot.lat === 'number' && typeof selectedSpot.lng === 'number') {
+      try {
+        map.flyTo([selectedSpot.lat, selectedSpot.lng], 15, {
+          duration: 1.2,
+          easeLinearity: 0.25
+        });
+      } catch (err) {
+        console.warn("map.flyTo error prevented:", err);
+      }
+    }
+  }, [selectedSpot, map]);
+  return null;
+}
+
 export default function AuthorityDashboard() {
   const { monuments, activeAlert, isConnected, selectedCity, switchCity } = useSocket();
 
   const [incidents, setIncidents] = useState(SEED_INCIDENTS);
+  const [selectedSpot, setSelectedSpot] = useState(null);
+  const markerRefs = useRef({});
   const hourlyData = buildHourlyData();
+
+  const handleSelectDestination = (spotName) => {
+    const spot = CROWD_POINTS.find(
+      p => p.name.toLowerCase() === spotName?.toLowerCase() || p.id === spotName
+    );
+    if (!spot) return;
+
+    setSelectedSpot(spot);
+
+    if (markerRefs.current[spot.id]) {
+      markerRefs.current[spot.id].openPopup();
+    }
+  };
 
   useEffect(() => {
     if (activeAlert?.crowdedSpot) {
@@ -305,6 +337,7 @@ export default function AuthorityDashboard() {
             <div className="h-[420px] relative">
               <MapContainer center={mapCenter} zoom={12} style={{ height: '100%', width: '100%' }}>
                 <MapRecenterer center={mapCenter} zoom={12} />
+                <MapFlyController selectedSpot={selectedSpot} />
                 <MapBoundsFitter points={CROWD_POINTS} />
                 <TileLayer
                   url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -313,23 +346,26 @@ export default function AuthorityDashboard() {
                 {CROWD_POINTS.map((point) => (
                   <Marker
                     key={point.id}
+                    ref={(el) => { if (el) markerRefs.current[point.id] = el; }}
                     position={[point.lat, point.lng]}
                     icon={createCrowdIcon(point)}
                   >
                     <Popup>
-                      <div className="p-1 space-y-1 font-sans text-xs">
-                        <div className="font-bold text-slate-900 flex items-center justify-between gap-2">
-                          <span>{point.name}</span>
-                          <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-bold ${point.status === 'ACTIVE' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                            {point.status}
+                      <div className="p-2 min-w-[200px] font-sans">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <h4 className="font-bold text-sm text-slate-900">{point.name}</h4>
+                          <span
+                            style={{ backgroundColor: getMarkerColor(point.percentage) }}
+                            className="text-white text-xs px-2 py-0.5 rounded-full font-bold shadow-xs"
+                          >
+                            {point.percentage}%
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-600 font-mono">
-                          Rush Level: <span className="font-bold">{point.rushLevel} ({point.percentage}%)</span>
-                        </div>
-                        <div className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-1 rounded">
-                          {point.action}
-                        </div>
+                        <p className="text-xs text-slate-600 mb-1"><strong>Rush Level:</strong> {point.rushLevel}</p>
+                        <p className="text-xs text-slate-600 mb-1"><strong>Action:</strong> {point.action}</p>
+                        <span className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded font-bold ${point.status === 'ACTIVE' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                          {point.status}
+                        </span>
                       </div>
                     </Popup>
                   </Marker>
@@ -371,9 +407,26 @@ export default function AuthorityDashboard() {
               <tbody className="divide-y divide-slate-100 font-medium">
                 {incidents.map((inc) => (
                   <tr key={inc.id} className="hover:bg-slate-50/80 transition-colors even:bg-slate-50/40">
-                    <td className="py-3 px-4 font-mono font-bold text-slate-900">{inc.id}</td>
+                    <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectDestination(inc.spot)}
+                        className="font-mono font-bold text-slate-900 hover:text-emerald-700 hover:underline cursor-pointer transition text-left focus:outline-none"
+                      >
+                        {inc.id}
+                      </button>
+                    </td>
                     <td className="py-3 px-4 font-mono text-slate-600">{inc.time}</td>
-                    <td className="py-3 px-4 font-bold text-slate-900">{inc.spot}</td>
+                    <td className="py-3 px-4 font-bold text-slate-900">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectDestination(inc.spot)}
+                        className="font-bold text-slate-800 hover:text-emerald-700 hover:underline cursor-pointer transition text-left flex items-center gap-1.5 focus:outline-none"
+                      >
+                        <MapPin size={12} className="text-emerald-700 shrink-0" />
+                        {inc.spot}
+                      </button>
+                    </td>
                     <td className="py-3 px-4 font-bold text-slate-800">{inc.level}</td>
                     <td className="py-3 px-4 text-slate-700">{inc.action}</td>
                     <td className="py-3 px-4 text-right font-mono font-bold">
