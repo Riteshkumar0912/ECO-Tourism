@@ -94,13 +94,14 @@ export default function HotelPortal() {
         {/* Partner Hospitality & Artisan Showcase Cards */}
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs flex flex-col group">
-            <div className="h-36 relative overflow-hidden bg-slate-900 shrink-0">
+            <div className="relative w-full h-48 sm:h-52 overflow-hidden rounded-t-xl bg-slate-900 shrink-0">
               <img
-                src="https://images.unsplash.com/photo-1601055283742-8b22a0149021?auto=format&fit=crop&w=600&q=80"
-                alt="Heritage Dining & Cafes"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                src="https://i.pinimg.com/1200x/a2/bb/d5/a2bbd55e26b31e5157b770d5e5292c0d.jpg"
+                alt="Heritage Dining & Thali Cafés"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                onError={(e) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&auto=format&fit=crop&q=80";
+                }}
               />
             </div>
             <div className="p-4 flex flex-col justify-between space-y-2 flex-1">
