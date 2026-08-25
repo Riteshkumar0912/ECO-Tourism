@@ -39,7 +39,7 @@ export const VERIFIED_MONUMENTS = {
   },
   "Hawa Mahal": {
     city: "Jaipur",
-    image: "https://images.unsplash.com/photo-1603288967911-37d805822365?w=800&auto=format&fit=crop&q=80",
+    image: "https://i.pinimg.com/1200x/32/c0/55/32c05532e6a27f8b4fa73492c4c23282.jpg",
     description: "Palace of the Winds with 953 honeycomb windows"
   },
   "City Palace Jaipur": {
