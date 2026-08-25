@@ -4,7 +4,7 @@ import { useSocket } from '../context/SocketContext';
 import {
   Hotel, Search, Calendar, Users, SlidersHorizontal, Star,
   MapPin, Leaf, Zap, CheckCircle, ShieldCheck, Tag, X,
-  Printer, ArrowRight, Sun, Car, Info, Sparkles, Building, Check, Ticket, Loader2
+  Printer, ArrowRight, Sun, Car, Info, Sparkles, Building, Check, Ticket, Loader2, Ban
 } from 'lucide-react';
 
 const SEED_HOTELS = [
@@ -23,7 +23,7 @@ const SEED_HOTELS = [
     originalPrice: 5200,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Organic Farm Dining', 'EV Charging Station', 'Zero Single-Use Plastic'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-101', name: 'Standard Heritage Eco Room', price: 4200, desc: 'Garden view with traditional Rajasthani solar cooling' },
       { id: 'RM-102', name: 'Royal Eco Suite', price: 6800, desc: 'Private terrace with rainwater harvesting bath fittings' }
@@ -44,7 +44,7 @@ const SEED_HOTELS = [
     originalPrice: 3800,
     rerouteDiscount: 20,
     image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Local Craft Furniture', 'Zero Waste Kitchen'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-201', name: 'Eco Courtyard Room', price: 3100, desc: 'Cool courtyard view with natural terracotta insulation' }
     ]
@@ -64,7 +64,7 @@ const SEED_HOTELS = [
     originalPrice: 6000,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', '100% Graywater Recycling', 'EV Charging Station', 'Organic Breakfast'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking'],
     rooms: [
       { id: 'RM-301', name: 'Deluxe Taj Garden Eco Room', price: 4800, desc: 'Quiet garden sanctuary with air-purifying indoor plants' }
     ]
@@ -84,7 +84,7 @@ const SEED_HOTELS = [
     originalPrice: 3000,
     rerouteDiscount: 25,
     image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Water Heating', 'Compost Management', 'Organic Garden'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-401', name: 'River View Eco Room', price: 2400, desc: 'Peaceful Yamuna view with organic linen bedding' }
     ]
@@ -104,7 +104,7 @@ const SEED_HOTELS = [
     originalPrice: 4200,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Zero Plastic Bottle Policy', 'EV E-Rickshaw Transfer', 'Organic Sattvik Kitchen'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'No Smoking Allowed'],
     rooms: [
       { id: 'RM-501', name: 'Ghat Sanctuary Room', price: 3500, desc: 'Serene morning yoga balcony' }
     ]
@@ -129,7 +129,7 @@ const SEED_HOTELS = [
     crowdLevel: 'Low',
     crowdZone: 'Low Crowd Zone',
     crowdZoneType: 'LOW',
-    ecoFeatures: ['Solar Powered', 'Zero Plastic Beach Protocol', 'Organic Farm Dining', 'EV Shuttle'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-GA-101', name: 'Luxury Villa Suite', price: 9500, desc: 'Private sea balcony with solar water cooling' }
     ]
@@ -154,7 +154,7 @@ const SEED_HOTELS = [
     crowdLevel: 'Moderate',
     crowdZone: 'Moderate Crowd Zone',
     crowdZoneType: 'MODERATE',
-    ecoFeatures: ['Solar Heated Pools', 'Recycled Bamboo Interior', 'Sustainable Seafood'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking'],
     rooms: [
       { id: 'RM-GA-201', name: 'Wonderful Ocean View Villa', price: 8200, desc: 'Panoramic Vagator cliffside sea view' }
     ]
@@ -179,7 +179,7 @@ const SEED_HOTELS = [
     crowdLevel: 'Low',
     crowdZone: 'Low Crowd Zone',
     crowdZoneType: 'LOW',
-    ecoFeatures: ['100% Bamboo Construction', 'Turtle Protection Lighting', 'Rainwater Harvesting'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-GA-301', name: 'Terrace Eco Chalet', price: 5400, desc: 'Paddy field facing sustainable wooden chalet' }
     ]
@@ -615,17 +615,31 @@ const API_BASE = (import.meta.env.VITE_BACKEND_URL || 'https://eco-tourism-fhui.
                               </div>
                             </div>
 
-                            {/* Eco Perks Chips */}
+                            {/* Amenities & Special Rules Chips */}
                             <div className="flex flex-wrap gap-1.5 pt-1">
-                              {hotel.ecoFeatures.map((feat, idx) => (
-                                <span
-                                  key={idx}
-                                  className="text-[10px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-md flex items-center gap-1"
-                                >
-                                  <Check size={10} className="text-emerald-700" />
-                                  {feat}
-                                </span>
-                              ))}
+                              {(() => {
+                                let features = [...(hotel.ecoFeatures || [])];
+                                const isVaranasi = hotel.city?.toLowerCase() === 'varanasi' || hotel.address?.toLowerCase().includes('varanasi');
+                                if (isVaranasi && !features.some(f => f.toLowerCase().includes('smoking'))) {
+                                  features.push('No Smoking Allowed');
+                                }
+                                return features.map((feat, idx) => {
+                                  const isNonSmoking = feat.toLowerCase().includes('smoking');
+                                  return (
+                                    <span
+                                      key={idx}
+                                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-md flex items-center gap-1 border ${
+                                        isNonSmoking
+                                          ? 'bg-rose-50 text-rose-800 border-rose-200 font-bold shadow-xs'
+                                          : 'bg-slate-50 text-slate-700 border-slate-200'
+                                      }`}
+                                    >
+                                      {isNonSmoking ? <Ban size={10} className="text-rose-700 shrink-0" /> : <Check size={10} className="text-emerald-700 shrink-0" />}
+                                      {feat}
+                                    </span>
+                                  );
+                                });
+                              })()}
                             </div>
                           </div>
 

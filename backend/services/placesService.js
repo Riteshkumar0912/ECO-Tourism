@@ -178,7 +178,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 5200,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Organic Farm Dining', 'EV Charging Station', 'Zero Single-Use Plastic'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-101', name: 'Standard Heritage Eco Room', price: 4200, desc: 'Garden view with solar cooling' },
       { id: 'RM-102', name: 'Royal Eco Suite', price: 6800, desc: 'Private terrace with rainwater harvesting bath' }
@@ -200,7 +200,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 3800,
     rerouteDiscount: 20,
     image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Local Craft Furniture', 'Zero Waste Kitchen'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-201', name: 'Eco Courtyard Room', price: 3100, desc: 'Cool courtyard view with natural insulation' }
     ]
@@ -221,7 +221,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 6000,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', '100% Graywater Recycling', 'EV Charging Station', 'Organic Breakfast'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking'],
     rooms: [
       { id: 'RM-301', name: 'Deluxe Taj Garden Eco Room', price: 4800, desc: 'Quiet garden sanctuary with indoor plants' }
     ]
@@ -242,7 +242,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 3000,
     rerouteDiscount: 25,
     image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Water Heating', 'Compost Management', 'Organic Garden'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-401', name: 'River View Eco Room', price: 2400, desc: 'Peaceful Yamuna view with organic linen' }
     ]
@@ -263,7 +263,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 4200,
     rerouteDiscount: 15,
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Solar Powered', 'Zero Plastic Bottle Policy', 'EV E-Rickshaw Transfer', 'Organic Sattvik Kitchen'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'No Smoking Allowed'],
     rooms: [
       { id: 'RM-501', name: 'Ghat Sanctuary Room', price: 3500, desc: 'Serene morning yoga balcony' }
     ]
@@ -284,7 +284,7 @@ const REAL_HOTELS_DATA = [
     originalPrice: 6800,
     rerouteDiscount: 20,
     image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80',
-    ecoFeatures: ['Turtle Friendly Lighting', '100% Bamboo Construction', 'Solar Powered', 'Sea-salt Spa'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-601', name: 'Eco Bamboo Beach Cottage', price: 5500, desc: 'Sustainable bamboo structure' }
     ]
@@ -310,7 +310,7 @@ const REAL_HOTELS_DATA = [
     crowdLevel: 'Low',
     crowdZone: 'Low Crowd Zone',
     crowdZoneType: 'LOW',
-    ecoFeatures: ['Solar Powered', 'Zero Plastic Beach Protocol', 'Organic Farm Dining', 'EV Shuttle'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-GA-101', name: 'Luxury Villa Suite', price: 9500, desc: 'Private sea balcony with solar water cooling' }
     ]
@@ -336,7 +336,7 @@ const REAL_HOTELS_DATA = [
     crowdLevel: 'Moderate',
     crowdZone: 'Moderate Crowd Zone',
     crowdZoneType: 'MODERATE',
-    ecoFeatures: ['Solar Heated Pools', 'Recycled Bamboo Interior', 'Sustainable Seafood'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking'],
     rooms: [
       { id: 'RM-GA-201', name: 'Wonderful Ocean View Villa', price: 8200, desc: 'Panoramic Vagator cliffside sea view' }
     ]
@@ -362,7 +362,7 @@ const REAL_HOTELS_DATA = [
     crowdLevel: 'Low',
     crowdZone: 'Low Crowd Zone',
     crowdZoneType: 'LOW',
-    ecoFeatures: ['100% Bamboo Construction', 'Turtle Protection Lighting', 'Rainwater Harvesting'],
+    ecoFeatures: ['Free High-Speed Wi-Fi', 'Food Facilities & Dining', 'Swimming Pool', 'On-Site Parking', 'Pets Allowed'],
     rooms: [
       { id: 'RM-GA-301', name: 'Terrace Eco Chalet', price: 5400, desc: 'Paddy field facing sustainable wooden chalet' }
     ]
