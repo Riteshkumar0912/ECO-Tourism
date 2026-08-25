@@ -44,15 +44,7 @@ function CityHealthPill({ monuments, city }) {
       </span>
     );
   }
-  return (
-    <span className="w-full bg-emerald-50 text-emerald-900 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center justify-between">
-      <span className="flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0" />
-        {city}: Crowd Normal
-      </span>
-      <span className="text-[10px] font-mono uppercase bg-emerald-100 text-emerald-900 px-1.5 py-0.2 rounded font-bold">Normal</span>
-    </span>
-  );
+  return null;
 }
 
 export default function Sidebar() {
