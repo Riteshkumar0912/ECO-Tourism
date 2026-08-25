@@ -65,12 +65,7 @@ export default function LandingPage() {
 
       {/* ── 2. Consolidated 3-Role Gateway (3 Clean Visual Image Cards) ──── */}
       <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 -mt-16 relative z-20 space-y-16">
-        <div className="space-y-4">
-          <div className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest font-mono bg-white/90 backdrop-blur-md inline-block px-4 py-1 rounded-full border border-slate-200 shadow-xs mx-auto block w-fit">
-            Select Evaluation Portal Role
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
 
             {/* Role 1: Tourist */}
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
@@ -187,7 +182,6 @@ export default function LandingPage() {
             </div>
 
           </div>
-        </div>
 
         {/* ── 3. Immersive Split-Screen Architecture Showcase ──────────────── */}
         <section className="bg-white border border-slate-200 rounded-2xl p-8 shadow-xs">
