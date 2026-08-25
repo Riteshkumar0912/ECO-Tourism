@@ -46,7 +46,7 @@ const PLACE_IMAGES = Object.entries(VERIFIED_MONUMENTS).reduce((acc, [name, data
 const CITY_HERO_DATA = Object.entries(MASTER_CITY_DATA).reduce((acc, [city, data]) => {
   acc[city] = {
     state: data.state,
-    title: `${data.name} — ${data.tagline.split(' ')[0]} ${data.tagline.split(' ')[1] || ''}`,
+    title: data.name,
     tagline: data.tagline,
     image: data.heroImage,
     weather: data.weather,
