@@ -344,8 +344,9 @@ function CityDestinationHub({ selectedCity, onQuickStart, liveWeather }) {
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm relative group">
         <div className="relative h-64 sm:h-72 overflow-hidden bg-slate-900">
           <img
-            src={cityData.image}
+            src={cityData.image || "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"}
             alt={cityData.title}
+            onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"; }}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
@@ -424,7 +425,12 @@ function CityDestinationHub({ selectedCity, onQuickStart, liveWeather }) {
               className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2.5 shadow-xs hover:-translate-y-1 hover:border-emerald-300 transition-all duration-200 hover:shadow-md cursor-pointer"
             >
               <div className="relative h-24 rounded-lg overflow-hidden bg-slate-100">
-                <img src={mon.img} alt={mon.name} className="w-full h-full object-cover" />
+                <img
+                  src={mon.img || "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"}
+                  alt={mon.name}
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"; }}
+                  className="w-full h-full object-cover"
+                />
                 <span className={`absolute top-2 right-2 text-[9px] font-bold px-2 py-0.5 rounded-md border backdrop-blur-xs ${
                   mon.status === 'RED'
                     ? 'bg-red-50 text-red-800 border-red-200'
@@ -623,12 +629,12 @@ function PlaceCard({ index = 0, place, globalMonuments, onRedAlert }) {
       {/* 16:9 Thumbnail Image Preview */}
       <div className="relative overflow-hidden rounded-xl bg-slate-100 h-44 w-full">
         <img
-          src={PLACE_IMAGES[placeName] || place.image || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=700&q=80'}
+          src={PLACE_IMAGES[placeName] || place.image || 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80'}
           alt={placeName}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           onError={(e) => {
-            e.currentTarget.src = 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80';
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80';
           }}
         />
       </div>
@@ -828,7 +834,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity,
                   alt={primaryTitle}
                   className="w-full h-full object-cover opacity-80"
                   loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"; }}
                 />
                 <span className="absolute top-1 left-1 bg-red-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono">
                   {saturationText} SATURATED
@@ -845,7 +851,7 @@ function RerouteModal({ isOpen, onClose, target, onAccept, loading, currentCity,
                   alt={alternateTitle}
                   className="w-full h-full object-cover"
                   loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80"; }}
                 />
                 <span className="absolute top-1 left-1 bg-emerald-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono">
                   RECOMMENDED

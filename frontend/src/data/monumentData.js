@@ -2,7 +2,7 @@ export const VERIFIED_MONUMENTS = {
   // Delhi
   "Red Fort": {
     city: "Delhi",
-    image: "https://images.unsplash.com/photo-1598324789736-4861f89564a0?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=800&auto=format&fit=crop&q=80",
     description: "Iconic red sandstone Mughal fortress complex"
   },
   "Safdarjung Tomb": {
@@ -12,17 +12,17 @@ export const VERIFIED_MONUMENTS = {
   },
   "Humayun's Tomb": {
     city: "Delhi",
-    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?w=800&auto=format&fit=crop&q=80",
     description: "UNESCO World Heritage Persian-style garden tomb"
   },
   "India Gate": {
     city: "Delhi",
-    image: "https://images.unsplash.com/photo-1576487246293-e12502693893?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&auto=format&fit=crop&q=80",
     description: "War memorial arch along Kartavya Path"
   },
   "Qutub Minar": {
     city: "Delhi",
-    image: "https://images.unsplash.com/photo-1545231027-637d2f6210f8?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80",
     description: "73m soaring brick minaret complex"
   },
 
@@ -39,8 +39,23 @@ export const VERIFIED_MONUMENTS = {
   },
   "Hawa Mahal": {
     city: "Jaipur",
-    image: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1603288967911-37d805822365?w=800&auto=format&fit=crop&q=80",
     description: "Palace of the Winds with 953 honeycomb windows"
+  },
+  "City Palace Jaipur": {
+    city: "Jaipur",
+    image: "https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?w=800&auto=format&fit=crop&q=80",
+    description: "Royal residence complex and museum"
+  },
+  "Jal Mahal": {
+    city: "Jaipur",
+    image: "https://images.unsplash.com/photo-1609137144822-0d1253457a41?w=800&auto=format&fit=crop&q=80",
+    description: "Water Palace in the middle of Man Sagar Lake"
+  },
+  "Nahargarh Fort": {
+    city: "Jaipur",
+    image: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=800&auto=format&fit=crop&q=80",
+    description: "Panoramic cliffside fort overlooking Jaipur city"
   },
 
   // Agra
@@ -49,27 +64,42 @@ export const VERIFIED_MONUMENTS = {
     image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&auto=format&fit=crop&q=80",
     description: "White marble mausoleum on the Yamuna bank"
   },
+  "Agra Fort": {
+    city: "Agra",
+    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=800&auto=format&fit=crop&q=80",
+    description: "Massive red sandstone Mughal imperial city fort"
+  },
   "Mehtab Bagh": {
     city: "Agra",
-    image: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80",
     description: "Charbagh complex offering reflection views of the Taj Mahal"
   },
   "Mehtab Bagh & Itimad-ud-Daulah": {
     city: "Agra",
-    image: "https://images.unsplash.com/photo-1548013146-72479768bbaa?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80",
     description: "Charbagh complex offering reflection views of the Taj Mahal"
   },
 
   // Varanasi
   "Dashashwamedh Ghat": {
     city: "Varanasi",
-    image: "https://www.varanasiguru.com/wp-content/uploads/2021/03/Dashashwamedh-Ghat.jpg",
+    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&auto=format&fit=crop&q=80",
     description: "Main ghat known for the grand evening Ganga Aarti"
   },
   "Assi Ghat": {
     city: "Varanasi",
     image: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?w=800&auto=format&fit=crop&q=80",
     description: "Serene southern ghat and morning yoga site"
+  },
+  "Kashi Vishwanath": {
+    city: "Varanasi",
+    image: "https://images.unsplash.com/photo-1627894483216-2138af692e32?w=800&auto=format&fit=crop&q=80",
+    description: "Sacred Jyotirlinga Shiva temple along the Ganges"
+  },
+  "Sarnath": {
+    city: "Varanasi",
+    image: "https://images.unsplash.com/photo-1609766857041-ed402ea8069a?w=800&auto=format&fit=crop&q=80",
+    description: "Historic Buddhist pilgrimage site where Lord Buddha first taught"
   },
   "Assi Ghat & Sarnath": {
     city: "Varanasi",
@@ -83,10 +113,30 @@ export const VERIFIED_MONUMENTS = {
   },
 
   // Goa
+  "Calangute Beach": {
+    city: "Goa",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=80",
+    description: "Vibrant North Goa beach known for water sports and shacks"
+  },
   "Baga Beach": {
     city: "Goa",
     image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=80",
     description: "Vibrant North Goa beach known for water sports and shacks"
+  },
+  "Aguada Fort": {
+    city: "Goa",
+    image: "https://images.unsplash.com/photo-1614082242765-7c98ca0f3df3?w=800&auto=format&fit=crop&q=80",
+    description: "17th-century Portuguese fortress and lighthouse overlooking the sea"
+  },
+  "Basilica of Bom Jesus": {
+    city: "Goa",
+    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800&auto=format&fit=crop&q=80",
+    description: "UNESCO World Heritage Baroque church housing St. Francis Xavier's relics"
+  },
+  "Palolem Beach": {
+    city: "Goa",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80",
+    description: "Scenic crescent-shaped palm beach in South Goa"
   },
   "Morjim Beach": {
     city: "Goa",
